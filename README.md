@@ -17,11 +17,12 @@ Should have:
 Could have:
 
 6.	As a user, I could map a trail of my adventure.
-7.	As a user, I could share tips and advice for optimal use of a metal detector.
+7.	As a user, I want to edit my discovery list.
+8.	As a user, I want to edit my user profile.
 
 Would have:
 
- 8. As a user, I could share tips and advice for optimal use of a metal detector with other app users. 
+9. As a user, I could share tips and advice for optimal use of a metal detector with other app users. 
      (NO ONE actually shares locations of valuable discoveries or valuable discoveries to due to intentional finding laws.)
 
 
