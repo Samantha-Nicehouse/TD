@@ -25,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnav);
+        //pass the navigation listener from below
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_view, new HomeFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
@@ -44,7 +45,9 @@ public class MainActivity extends AppCompatActivity {
                     } else if (item.getItemId() == R.id.navBar_lists) {
                         selectedFragment = new ListFragment();
                     }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_view, selectedFragment).commit();
+
+                    //puts fragment in the framelayout
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
                     return true;
                 }
             };

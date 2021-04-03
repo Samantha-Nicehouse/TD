@@ -7,16 +7,11 @@
 
 
     <TextView
-        android:id="@+id/listFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="389dp"
-        android:layout_marginBottom="323dp"
-        android:gravity="center_horizontal"
-        android:text="Lists Fragment"
+        android:text="Profile Fragment"
+        android:textSize="30sp"
+        android:layout_centerInParent="true"
         android:textColor="@color/gray" />
 
 
