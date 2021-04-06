@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.treasuredetector.R;
-import com.google.android.material.bottomappbar.BottomAppBar;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /*apart from controlling the app, Activity also controls creation,
@@ -36,14 +36,14 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     Fragment selectedFragment = null;
 
-                    if (item.getItemId() == R.id.navBar_home) {
-                        selectedFragment = new HomeFragment();
-                    } else if (item.getItemId() == R.id.navBar_profile) {
+                    if (item.getItemId() == R.id.navBar_profile) {
                         selectedFragment = new ProfileFragment();
                     } else if (item.getItemId() == R.id.navBar_map) {
                         selectedFragment = new MapFragment();
                     } else if (item.getItemId() == R.id.navBar_lists) {
-                        selectedFragment = new ListFragment();
+                        selectedFragment = new ItemFragment();
+                    } else {
+                        selectedFragment = new HomeFragment();
                     }
 
                     //puts fragment in the framelayout
@@ -51,4 +51,5 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             };
+
 }
