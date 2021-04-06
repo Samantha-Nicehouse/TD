@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.treasuredetector.R;
+import com.example.treasuredetector.model.ItemModel;
 import com.example.treasuredetector.view.dummy.DummyContent;
 import com.example.treasuredetector.view.dummy.DummyContent.Item;
 
@@ -20,9 +21,24 @@ import java.util.List;
  */
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyContent.Item> mValues;
+    private final List<ItemModel> mValues;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public final View mView;
+        public final ImageView mImageView;
+        public final TextView mIdView;
+        public final TextView mIdView2;
 
-    public MyItemRecyclerViewAdapter(List<DummyContent.Item> items) {
+
+        public ViewHolder(View view) {
+            super(view);
+            mView = view;
+            mImageView = (ImageView) view.findViewById(R.id.item_imageView);
+            mIdView = (TextView) view.findViewById(R.id.item_name);
+            mIdView2 = (TextView) view.findViewById(R.id.item_line);
+
+        }
+    }
+    public MyItemRecyclerViewAdapter(List<ItemModel> items) {
         mValues = items;
     }
 
@@ -35,8 +51,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
+        ItemModel currentItem = mValues.get(position);
+        holder.mImageView.setImageResource(currentItem.getImageResource());
+        holder.mIdView.setText(currentItem.getText1());
+        holder.mIdView2.setText(currentItem.getText2());
 
     }
 
@@ -45,22 +63,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
 
-        public DummyContent.Item mItem;
-
-        public ViewHolder(View view) {
-            super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-
-        }
 
         @Override
         public String toString() {
             return super.toString() + " '" ;
         }
     }
-}

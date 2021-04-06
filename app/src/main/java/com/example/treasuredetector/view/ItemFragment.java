@@ -1,8 +1,9 @@
 package com.example.treasuredetector.view;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
-
+import com.example.treasuredetector.model.Item2;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,8 +32,17 @@ public class ItemFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
-
-    /**
+    private static ArrayList<ItemModel> items = new ArrayList<>();
+   static{     items.add(new ItemModel(R.drawable.ic_quiver, "Arrow", "Line 2"));
+       items.add(new ItemModel(R.drawable.ic_bottlecap, "Bottlecap", "Line 2"));
+       items.add(new ItemModel(R.drawable.ic_bow_and_arrow, "Bow&Arrow", "Line 2"));
+       items.add(new ItemModel(R.drawable.ic_bullets, "Bullets","Line 2"));
+       items.add(new ItemModel(R.drawable.ic_chest, "Miscellaneous", "Line 2"));
+       items.add(new ItemModel(R.drawable.ic_coins, "Coins", "Line 2"));
+       items.add(new ItemModel(R.drawable.ic_jewelry, "Jewelry", "Line 2"));
+       items.add(new ItemModel(R.drawable.ic_key, "Keys", "Line 2"));
+       items.add(new ItemModel(R.drawable.ic_sword, "Knife", "Line 2")); }
+    /**}
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
@@ -76,7 +86,7 @@ public class ItemFragment extends Fragment {
             }
 
 
-                recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS));
+                recyclerView.setAdapter(new MyItemRecyclerViewAdapter(items));
             }
 
         return view;

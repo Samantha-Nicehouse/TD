@@ -14,7 +14,7 @@ public class Item2 {
  public static Integer[] drawableArray = {R.drawable.ic_quiver, R.drawable.ic_bottlecap, R.drawable.ic_coins,
             R.drawable.ic_jewelry, R.drawable.ic_key, R.drawable.ic_sword, R.drawable.ic_chest,
             R.drawable.ic_bow_and_arrow};
- public static Integer[] id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+ public static String[] id = { "1", "2","3","4","5","6","7","8","9"};
 
 
 
