@@ -10,23 +10,26 @@ import android.widget.TextView;
 
 import com.example.treasuredetector.R;
 import com.example.treasuredetector.model.ItemModel;
-import com.example.treasuredetector.view.dummy.DummyContent;
-import com.example.treasuredetector.view.dummy.DummyContent.Item;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Item}.
+
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<ItemModel> mValues;
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final ImageView mImageView;
         public final TextView mIdView;
         public final TextView mIdView2;
+        public final FloatingActionButton mFab;
+
 
 
         public ViewHolder(View view) {
@@ -35,11 +38,14 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             mImageView = (ImageView) view.findViewById(R.id.item_imageView);
             mIdView = (TextView) view.findViewById(R.id.item_name);
             mIdView2 = (TextView) view.findViewById(R.id.item_line);
+            mFab = (FloatingActionButton) view.findViewById(R.id.fab);
+
 
         }
     }
-    public MyItemRecyclerViewAdapter(List<ItemModel> items) {
+    public MyItemRecyclerViewAdapter(List<ItemModel> items ) {
         mValues = items;
+
     }
 
     @Override
