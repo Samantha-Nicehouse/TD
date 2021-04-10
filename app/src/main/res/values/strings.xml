@@ -4,8 +4,8 @@
     <string name="map">Map</string>
     <string name="lists">Lists</string>
     <string name="home">Home</string>
-    
-    <string-array name="TreasureList">
+
+    <string-array name="treasure_array">
         <item>Arrow</item>
         <item>Bullet</item>
         <item>Coins</item>
@@ -14,4 +14,5 @@
         <item>Key</item>
         <item>Knife</item>
     </string-array>
+
 </resources>

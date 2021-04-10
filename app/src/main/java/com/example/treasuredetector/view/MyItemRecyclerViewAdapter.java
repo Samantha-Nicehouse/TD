@@ -20,7 +20,9 @@ import java.util.List;
  */
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<ItemModel> mValues;
+   public List<ItemModel> mValues;
+
+
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -28,7 +30,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public final ImageView mImageView;
         public final TextView mIdView;
         public final TextView mIdView2;
-        public final FloatingActionButton mFab;
+
 
 
 
@@ -38,7 +40,6 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             mImageView = (ImageView) view.findViewById(R.id.item_imageView);
             mIdView = (TextView) view.findViewById(R.id.item_name);
             mIdView2 = (TextView) view.findViewById(R.id.item_line);
-            mFab = (FloatingActionButton) view.findViewById(R.id.fab);
 
 
         }

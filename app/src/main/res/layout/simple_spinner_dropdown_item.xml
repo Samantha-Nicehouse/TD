@@ -9,10 +9,15 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp">
 
+
     <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="186dp"
-        android:layout_height="86dp"
-         />
+        android:id="@+id/trSpinner"
+        android:layout_width="274dp"
+        android:layout_height="115dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="89dp"
+        />
 
 </RelativeLayout>

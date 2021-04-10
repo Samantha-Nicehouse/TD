@@ -14,6 +14,9 @@ import android.view.MenuItem;
 import com.example.treasuredetector.R;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+
 
 /*apart from controlling the app, Activity also controls creation,
 destruction and other states of the App's lifecycle.*/
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
 
                     if (item.getItemId() == R.id.navBar_profile) {
-                        selectedFragment = new ProfileFragment();
+                        selectedFragment = new SpinnerFragment();
                     } else if (item.getItemId() == R.id.navBar_map) {
                         selectedFragment = new MapFragment();
                     } else if (item.getItemId() == R.id.navBar_lists) {

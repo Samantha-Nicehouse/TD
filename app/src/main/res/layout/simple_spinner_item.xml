@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/spinner_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.SpinnerFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <TextView
+        android:id="@+id/displayTextView"
+        android:layout_width="152dp"
+        android:layout_height="65dp"
+        android:padding="5dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/gray"
+        android:textStyle="bold"/>
+
+</FrameLayout>
