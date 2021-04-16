@@ -5,10 +5,15 @@ package com.example.treasuredetector.view;
 at different App states, which we can override to perform anything we want.*/
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.treasuredetector.MapsFragment;
@@ -23,7 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 destruction and other states of the App's lifecycle.*/
 public class MainActivity extends AppCompatActivity {
 
-
+    MapsFragment mapFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,5 +60,6 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             };
+
 
 }
