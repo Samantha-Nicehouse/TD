@@ -11,6 +11,7 @@ import androidx.fragment.app.ListFragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.treasuredetector.MapsFragment;
 import com.example.treasuredetector.R;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                     if (item.getItemId() == R.id.navBar_profile) {
                         selectedFragment = new SpinnerFragment();
                     } else if (item.getItemId() == R.id.navBar_map) {
-                        selectedFragment = new MapFragment();
+                        selectedFragment = new MapsFragment();
                     } else if (item.getItemId() == R.id.navBar_lists) {
                         selectedFragment = new ItemFragment();
                     } else {

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,13 +79,15 @@ public class SpinnerFragment extends Fragment implements OnItemSelectedListener 
 
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemAtPosition(position).equals("Choose category")) {
-
+                            //do nothing
                 } else {
                     //on selecting the a spinner item
                     String item = parent.getItemAtPosition(position).toString();
 
                     //show selected spinner item
-                    Toast.makeText(parent.getContext(), "Selected" + item, Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(parent.getContext(), "Selected" + item, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP|Gravity.RIGHT, 100, 250);
+                            toast.show();
 
                     //anything else I can make here
                 }
@@ -104,17 +107,7 @@ public class SpinnerFragment extends Fragment implements OnItemSelectedListener 
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent.getItemAtPosition(position).equals("Choose category")) {
 
-        } else {
-            //on selecting the a spinner item
-            String item = parent.getItemAtPosition(position).toString();
-
-            //show selected spinner item
-            Toast.makeText(parent.getContext(), "Selected" + item, Toast.LENGTH_SHORT).show();
-
-            //anything else I can make here
-        }
     }
 
     @Override
