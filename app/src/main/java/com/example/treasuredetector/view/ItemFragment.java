@@ -18,33 +18,31 @@ import com.example.treasuredetector.model.ItemModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * A fragment representing a list of Items.
  */
 public class ItemFragment extends Fragment  {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-
     RecyclerView recyclerView;
     MyItemRecyclerViewAdapter adapter;
     FloatingActionButton fab;
 
+
     private static ArrayList<ItemModel> items = new ArrayList<>();
 
-   static{     items.add(new ItemModel(R.drawable.ic_quiver, "Arrow", "Line 2"));
-       items.add(new ItemModel(R.drawable.ic_bottlecap, "Bottlecap", "Line 2"));
-       items.add(new ItemModel(R.drawable.ic_bow_and_arrow, "Bow&Arrow", "Line 2"));
-       items.add(new ItemModel(R.drawable.ic_bullets, "Bullets","Line 2"));
-       items.add(new ItemModel(R.drawable.ic_chest, "Miscellaneous", "Line 2"));
-       items.add(new ItemModel(R.drawable.ic_coins, "Coins", "Line 2"));
-       items.add(new ItemModel(R.drawable.ic_jewelry, "Jewelry", "Line 2"));
-       items.add(new ItemModel(R.drawable.ic_key, "Keys", "Line 2"));
-       items.add(new ItemModel(R.drawable.ic_sword, "Knife", "Line 2")); }
+   static{     items.add(new ItemModel(R.drawable.ic_quiver, "Arrow"));
+       items.add(new ItemModel(R.drawable.ic_bottlecap, "Bottlecap"));
+       items.add(new ItemModel(R.drawable.ic_bow_and_arrow, "Bow&Arrow"));
+       items.add(new ItemModel(R.drawable.ic_bullets, "Bullets"));
+       items.add(new ItemModel(R.drawable.ic_chest, "Miscellaneous"));
+       items.add(new ItemModel(R.drawable.ic_coins, "Coins"));
+       items.add(new ItemModel(R.drawable.ic_jewelry, "Jewelry"));
+       items.add(new ItemModel(R.drawable.ic_key, "Keys"));
+       items.add(new ItemModel(R.drawable.ic_sword, "Knife")); }
     /**}
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -52,25 +50,13 @@ public class ItemFragment extends Fragment  {
     public ItemFragment() {
     }
 
-       // TODO: Customize parameter initialization
 
-    @SuppressWarnings("unused")
-    public static ItemFragment newInstance(int columnCount) {
-        ItemFragment fragment = new ItemFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
 
 
     }

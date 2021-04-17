@@ -1,14 +1,18 @@
 package com.example.treasuredetector.model;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class ItemModel {
 
     private int mImageResource;
     private String mText1;
-    private String mText2;
-    public ItemModel(int imageResource, String text1, String text2) {
+    public Calendar calendar = Calendar.getInstance();
+    public String mCurrentDate;
+    public ItemModel(int imageResource, String text1) {
         mImageResource = imageResource;
         mText1 = text1;
-        mText2 = text2;
+        mCurrentDate = DateFormat.getDateInstance().format(calendar.getTime());;
     }
 
     public int getImageResource() {
@@ -17,8 +21,8 @@ public class ItemModel {
     public String getText1() {
         return mText1;
     }
-    public String getText2() {
-        return mText2;
+    public String getCurrentDate() {
+        return mCurrentDate;
     }
 
 

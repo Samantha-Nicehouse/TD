@@ -12,6 +12,8 @@ import com.example.treasuredetector.R;
 import com.example.treasuredetector.model.ItemModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -61,7 +63,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         ItemModel currentItem = mValues.get(position);
         holder.mImageView.setImageResource(currentItem.getImageResource());
         holder.mIdView.setText(currentItem.getText1());
-        holder.mIdView2.setText(currentItem.getText2());
+        holder.mIdView2.setText(currentItem.mCurrentDate);
 
     }
 

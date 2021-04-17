@@ -4,6 +4,7 @@
     <string name="map">Map</string>
     <string name="lists">Lists</string>
     <string name="home">Home</string>
+    <string name="Date">Date:</string>
 
     <string-array name="treasure_array">
         <item>Arrow</item>
