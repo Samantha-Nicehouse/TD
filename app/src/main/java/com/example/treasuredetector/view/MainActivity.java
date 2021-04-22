@@ -28,7 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 destruction and other states of the App's lifecycle.*/
 public class MainActivity extends AppCompatActivity {
 
-    MapsFragment mapFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +60,5 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             };
-
 
 }
