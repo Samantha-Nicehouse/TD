@@ -45,7 +45,7 @@
 
                     <TextView
                         android:id="@+id/item_name"
-                        android:layout_width="match-parent"
+                        android:layout_width="480dp"
                         android:layout_height="40dp"
                         android:layout_marginStart="@dimen/text_margin"
                         android:layout_marginTop="@dimen/text_margin"
@@ -56,7 +56,7 @@
 
                     <TextView
                         android:id="@+id/item_line"
-                        android:layout_width="match-parent"
+                        android:layout_width="480dp"
                         android:layout_height="40dp"
                         android:layout_below="@+id/item_name"
                         android:layout_alignParentBottom="true"
@@ -81,4 +81,3 @@
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
