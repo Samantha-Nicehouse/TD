@@ -5,10 +5,7 @@
         android:id="@+id/navBar_home"
         android:icon="@drawable/ic_baseline_home_24"
         android:title="@string/home"/>
-    <item
-        android:id="@+id/navBar_profile"
-        android:icon="@drawable/ic_outline_face_24"
-        android:title="@string/profile"/>
+
 
     <item
         android:id="@+id/navBar_map"

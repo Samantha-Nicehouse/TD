@@ -9,6 +9,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -19,6 +22,7 @@ import android.view.MenuItem;
 import com.example.treasuredetector.MapsFragment;
 import com.example.treasuredetector.R;
 
+import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -28,37 +32,26 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 destruction and other states of the App's lifecycle.*/
 public class MainActivity extends AppCompatActivity {
 
+    private ItemViewModel itemViewModel;
+    NavController navController;
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnav);
-        //pass the navigation listener from below
-        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+        initViews();
+        setupNavigation();
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
 
-                    if (item.getItemId() == R.id.navBar_profile) {
-                        selectedFragment = new SpinnerFragment();
-                    } else if (item.getItemId() == R.id.navBar_map) {
-                        selectedFragment = new MapsFragment();
-                    } else if (item.getItemId() == R.id.navBar_lists) {
-                        selectedFragment = new ItemFragment();
-                    } else {
-                        selectedFragment = new HomeFragment();
-                    }
+    private void initViews() {
+        bottomNavigationView = findViewById(R.id.bottomnav);
+    }
 
-                    //puts fragment in the framelayout
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
-                    return true;
-                }
-            };
-
+    private void setupNavigation()
+    {
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupWithNavController(bottomNavigationView,navController);
+    }
 }

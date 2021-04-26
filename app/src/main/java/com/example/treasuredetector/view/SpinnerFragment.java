@@ -1,12 +1,8 @@
 package com.example.treasuredetector.view;
 
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,24 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.treasuredetector.model.ItemModel;
-import com.example.treasuredetector.view.MyItemRecyclerViewAdapter;
-
 import com.example.treasuredetector.R;
-import com.example.treasuredetector.view.MyItemRecyclerViewAdapter.ViewHolder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import android.widget.AdapterView.OnItemSelectedListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.layout.simple_spinner_item;
-import static android.widget.SpinnerAdapter.*;
 
 /**
 
@@ -85,8 +71,7 @@ public class SpinnerFragment extends Fragment implements OnItemSelectedListener 
                     String item = parent.getItemAtPosition(position).toString();
 
                     //show selected spinner item
-                    Toast toast = Toast.makeText(parent.getContext(), "Selected" + item, Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP|Gravity.RIGHT, 100, 250);
+                    Toast toast = Toast.makeText(parent.getContext(), "Selected" + item, Toast.LENGTH_LONG);
                             toast.show();
 
                     //anything else I can make here

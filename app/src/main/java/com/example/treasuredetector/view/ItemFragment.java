@@ -1,48 +1,35 @@
 package com.example.treasuredetector.view;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.treasuredetector.R;
 
-import com.example.treasuredetector.model.ItemModel;
+import com.example.treasuredetector.model.Item;
+import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * A fragment representing a list of Items.
  */
 public class ItemFragment extends Fragment  {
-
+    private ItemViewModel itemViewModel;
     RecyclerView recyclerView;
-    MyItemRecyclerViewAdapter adapter;
+    RecyclerViewAdapter adapter;
     FloatingActionButton fab;
 
 
-    private static ArrayList<ItemModel> items = new ArrayList<>();
-
-   static{     items.add(new ItemModel(R.drawable.ic_quiver, "Arrow"));
-       items.add(new ItemModel(R.drawable.ic_bottlecap, "Bottlecap"));
-       items.add(new ItemModel(R.drawable.ic_bow_and_arrow, "Bow&Arrow"));
-       items.add(new ItemModel(R.drawable.ic_bullets, "Bullets"));
-       items.add(new ItemModel(R.drawable.ic_chest, "Miscellaneous"));
-       items.add(new ItemModel(R.drawable.ic_coins, "Coins"));
-       items.add(new ItemModel(R.drawable.ic_jewelry, "Jewelry"));
-       items.add(new ItemModel(R.drawable.ic_key, "Keys"));
-       items.add(new ItemModel(R.drawable.ic_sword, "Knife")); }
     /**}
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -53,29 +40,29 @@ public class ItemFragment extends Fragment  {
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-
-
-    }
-
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+        //pass the fragment so that viewmodel knows which lifecycle to scope to
+        //android activity will destroy the fragment when "this" is finished
+        itemViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
 
-        // Set the adapter
+        //only returns if activity is running in the foreground
+        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), items -> adapter.setList(items));
+                //update recyclerView
+                Toast.makeText(getContext().getApplicationContext(), "onChanged", Toast.LENGTH_SHORT).show();
+
         recyclerView = view.findViewById(R.id.list);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        adapter = new MyItemRecyclerViewAdapter((items));
-        recyclerView.setAdapter(adapter);
+        BuildRecyclerView();
         return view;
-
-
     }
 
+
+    private void BuildRecyclerView() {
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new RecyclerViewAdapter();
+        //set the adapter
+        recyclerView.setAdapter(adapter);
+    }
 }

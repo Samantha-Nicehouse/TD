@@ -39,7 +39,7 @@
                     android:src="@drawable/ic_bullets"/>
 
                 <RelativeLayout
-                    android:layout_width="456dp"
+                    android:layout_width="278dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
 

@@ -1,45 +1,56 @@
 package com.example.treasuredetector.model;
 import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
-import com.example.treasuredetector.R;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
-import java.util.List;
-
-
-
-@Entity(tableName= "item_table")
+@Entity(tableName = "item_table")
 public class Item {
-   public String itemName;
-   public int drawable;
-    private static List<String> treasureNameList;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    private int mImageResource;
 
-  public static String[] nameArray = {"Bullet","Coins", "Jewelry","Junk", "Keys","Knife","Misc"};
-
- public static Integer[] drawableArray = {R.drawable.ic_bullets, R.drawable.ic_coins,
-            R.drawable.ic_jewelry, R.drawable.ic_bottlecap, R.drawable.ic_key, R.drawable.ic_sword, R.drawable.ic_chest,
-         };
- public static String[] id = { "1", "2","3","4","5","6","7","8","9"};
-
-
-
-    public static List<String> allTreasureNames() {
-        for (int i = 1; i < Item.nameArray.length; i++) {
-            treasureNameList.add(nameArray[i]);
-        }
-        return treasureNameList;
+    public int getmImageResource() {
+        return mImageResource;
     }
 
-
-public String getItemName(){
-        return itemName;
-}
-    public int getDrawable()
-    {
-        return drawable;
+    public void setmImageResource(int mImageResource) {
+        this.mImageResource = mImageResource;
     }
 
+    private String mName;
+    @Ignore
+    public Calendar calendar = Calendar.getInstance();
+    private String mCurrentDate;
+
+
+    public Item(int imageResource, String name) {
+        mImageResource = imageResource;
+        mName = name;
+        mCurrentDate = DateFormat.getDateInstance().format(calendar.getTime());;
+    }
+
+    public int getImageResource() {
+        return mImageResource;
+    }
+    public String getName() {
+        return mName;
+    }
+    public String getCurrentDate() {
+        return mCurrentDate;
+    }
+
+    public void setCurrentDate(String mCurrentDate) {
+        this.mCurrentDate = mCurrentDate;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    public int getId(){return id;}
+
 }
-
-
-
 
