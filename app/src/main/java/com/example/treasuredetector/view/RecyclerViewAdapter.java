@@ -9,20 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.treasuredetector.R;
-import com.example.treasuredetector.model.ItemModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.treasuredetector.model.Item;
 
-import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 /**
 
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-   public List<ItemModel> mValues;
+   public List<Item> mValues;
 
 
 
@@ -46,10 +43,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
         }
     }
-    public MyItemRecyclerViewAdapter(List<ItemModel> items ) {
+    /*public RecyclerViewAdapter(List<Item> items ) {
         mValues = items;
-
-    }
+//comment out for now
+    }*/
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -60,10 +57,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        ItemModel currentItem = mValues.get(position);
+        Item currentItem = mValues.get(position);
         holder.mImageView.setImageResource(currentItem.getImageResource());
-        holder.mIdView.setText(currentItem.getText1());
-        holder.mIdView2.setText(currentItem.mCurrentDate);
+        holder.mIdView.setText(currentItem.getName());
+        holder.mIdView2.setText(currentItem.getCurrentDate());
 
     }
 
@@ -72,7 +69,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         return mValues.size();
     }
 
-
+    public void setList(List<Item> items)
+    {
+        this.mValues = items;
+        notifyDataSetChanged();
+    }
 
         @Override
         public String toString() {
