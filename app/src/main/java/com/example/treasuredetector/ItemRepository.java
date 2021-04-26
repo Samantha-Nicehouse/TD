@@ -26,7 +26,7 @@ public class ItemRepository {
         ItemDatabase database = ItemDatabase.getInstance(application);
         itemDao = database.itemDao(); //assign database
         allItems = itemDao.getAllItems();
-        executorService = Executors.newFixedThreadPool(2);
+        executorService = Executors.newFixedThreadPool(4);
         mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper());
     }
 //the following methods are the API that passes items to the repository abstractions layer
