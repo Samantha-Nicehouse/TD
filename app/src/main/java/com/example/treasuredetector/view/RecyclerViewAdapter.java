@@ -43,10 +43,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }
     }
-    /*public RecyclerViewAdapter(List<Item> items ) {
-        mValues = items;
-//comment out for now
-    }*/
+  public RecyclerViewAdapter( ) {
+
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
