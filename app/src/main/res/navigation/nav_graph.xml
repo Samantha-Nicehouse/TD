@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/navBar_lists"
-        android:name="com.example.treasuredetector.ItemFragment"
+        android:name="com.example.treasuredetector.view.ItemFragment"
         android:label="fragment_item_list"
         tools:layout="@layout/fragment_item_list" >
     </fragment>

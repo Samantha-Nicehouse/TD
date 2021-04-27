@@ -3,6 +3,7 @@ package com.example.treasuredetector.view;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +19,7 @@ import com.example.treasuredetector.model.Item;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 public class ItemFragment extends Fragment  {
     private ItemViewModel itemViewModel;
     RecyclerView recyclerView;
-    RecyclerViewAdapter adapter;
+    ItemAdapter adapter;
     FloatingActionButton fab;
 
 
@@ -45,15 +46,17 @@ public class ItemFragment extends Fragment  {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
         //pass the fragment so that viewmodel knows which lifecycle to scope to
         //android activity will destroy the fragment when "this" is finished
+
+
+
         itemViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
 
         //only returns if activity is running in the foreground
-        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), items -> adapter.setList(items));
-                //update recyclerView
-                Toast.makeText(getContext().getApplicationContext(), "onChanged", Toast.LENGTH_SHORT).show();
+        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), (Observer<List<Item>>) items -> adapter.setList(items));
 
         recyclerView = view.findViewById(R.id.list);
         BuildRecyclerView();
+
         return view;
     }
 
@@ -61,7 +64,7 @@ public class ItemFragment extends Fragment  {
     private void BuildRecyclerView() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new RecyclerViewAdapter();
+        adapter = new ItemAdapter();
         //set the adapter
         recyclerView.setAdapter(adapter);
     }
