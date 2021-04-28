@@ -51,7 +51,7 @@
                         android:layout_marginTop="@dimen/text_margin"
                         android:layout_marginEnd="@dimen/text_margin"
                         android:layout_marginBottom="@dimen/text_margin"
-                        android:text="Line 1"
+                        android:text="@string/new_item"
                         android:textSize="20sp" />
 
                     <TextView
@@ -67,7 +67,7 @@
                         android:layout_marginBottom="40dp"
                         android:contentDescription="@string/Date"
                         android:inputType="datetime"
-                        android:text="Date"
+                        android:text="@string/Date"
                         android:textSize="20sp" />
 
 

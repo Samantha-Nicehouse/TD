@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "204946386763",
+    "project_id": "treasure-detector",
+    "storage_bucket": "treasure-detector.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204946386763:android:4f6d9b78b2e77253dec2ce",
+        "android_client_info": {
+          "package_name": "com.example.treasuredetector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "204946386763-ivbhefdnhps4b7chinprl2rr674cds3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb36WqTq1ijC0ASYK9RhWGe4ymJg2HTsA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "204946386763-ivbhefdnhps4b7chinprl2rr674cds3f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

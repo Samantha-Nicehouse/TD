@@ -2,6 +2,7 @@ package com.example.treasuredetector.view;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,17 +20,18 @@ import com.example.treasuredetector.model.Item;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A fragment representing a list of Items.
  */
-public class ItemFragment extends Fragment  {
+public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListener  {
     private ItemViewModel itemViewModel;
     RecyclerView recyclerView;
     ItemAdapter adapter;
     FloatingActionButton fab;
-
+    private List<Item> list = new ArrayList<>();
 
     /**}
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -52,20 +54,34 @@ public class ItemFragment extends Fragment  {
         itemViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
 
         //only returns if activity is running in the foreground
-        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), (Observer<List<Item>>) items -> adapter.setList(items));
+        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
+            @Override
+            public void onChanged(List<Item> items) {
+                adapter.setList(items);
+            }
+        });
 
         recyclerView = view.findViewById(R.id.list);
         BuildRecyclerView();
-
         return view;
+
     }
+
+
+
 
 
     private void BuildRecyclerView() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ItemAdapter();
+        adapter = new ItemAdapter(list, this);
         //set the adapter
         recyclerView.setAdapter(adapter);
+
+    }
+
+    @Override
+    public void onItemClick(Item item, View view) {
+
     }
 }
