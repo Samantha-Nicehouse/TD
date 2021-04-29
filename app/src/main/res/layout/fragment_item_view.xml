@@ -1,16 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toTopOf="@+id/bottomnav"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+    android:visibility="visible">
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/itemViewDetail"
-    tools:context=".view.ItemViewFragment">
+    app:layout_constraintBottom_toTopOf="@+id/bottomnav"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-    <!-- TODO: Update blank fragment layout -->
+
+
+        <!-- TODO: Update blank fragment layout -->
+
+        <ImageView
+            android:id="@+id/category_image"
+            android:layout_width="310dp"
+            android:layout_height="300dp"
+            android:src="@drawable/ic_bullets"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="143dp"
+            tools:layout_conversion_absoluteWidth="99dp" />
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/category_TV"
+        android:layout_width="207dp"
+        android:layout_height="139dp"
+        android:hint="category"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        app:layout_constraintBottom_toTopOf="@+id/category_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498"
+        tools:layout_conversion_absoluteHeight="57dp"
+        tools:layout_conversion_absoluteWidth="43dp" />
+
+        <EditText
+            android:id="@+id/location_id"
+            android:layout_width="391dp"
+            android:layout_height="142dp"
+            android:hint="location"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/category_image" />
 
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

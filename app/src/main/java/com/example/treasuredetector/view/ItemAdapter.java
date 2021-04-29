@@ -27,23 +27,23 @@ import it.sephiroth.android.library.bottomnavigation.OnItemClickListener;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
     private List<Item> items = new ArrayList<>();
-    private ItemClickListener listener;
+    private ItemClickListener clickListener;
 
 
     public ItemAdapter() {}
 
-    public ItemAdapter(List<Item> items, ItemClickListener itemClickListener) {
-
+    public ItemAdapter(List<Item> items, ItemClickListener clickListener) {
         this.items = items;
-        this.listener  = itemClickListener;
+        this.clickListener = clickListener;
+
     }
 
     @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
+    public ItemAdapter.ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_item, parent, false);
-        return new ItemHolder(itemView);
+        return new ItemHolder(view);
     }
 
 
@@ -55,8 +55,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
         holder.mDate.setText(currentItem.getCurrentDate());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                listener.onItemClick(items.get(position), view);
+            public void onClick(View v) {
+
+                clickListener.onItemClick(currentItem);
             }
         }
 
@@ -78,7 +79,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
     }
 
     public interface ItemClickListener{
-        void onItemClick(Item item, View view);
+        void onItemClick(Item item);
     }
 
     class ItemHolder extends RecyclerView.ViewHolder {

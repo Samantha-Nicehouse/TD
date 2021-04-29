@@ -26,12 +26,12 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  */
-public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListener  {
+public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListener {
     private ItemViewModel itemViewModel;
-    RecyclerView recyclerView;
+
     ItemAdapter adapter;
     FloatingActionButton fab;
-    private List<Item> list = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
 
     /**}
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -57,12 +57,13 @@ public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListe
         itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
             @Override
             public void onChanged(List<Item> items) {
+
                 adapter.setList(items);
             }
         });
 
-        recyclerView = view.findViewById(R.id.list);
-        BuildRecyclerView();
+        buildItemListData();
+        InitRecyclerView(view);
         return view;
 
     }
@@ -71,17 +72,28 @@ public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListe
 
 
 
-    private void BuildRecyclerView() {
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ItemAdapter(list, this);
+    private void InitRecyclerView(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.list);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        ItemAdapter adapter = new ItemAdapter();
         //set the adapter
         recyclerView.setAdapter(adapter);
 
     }
 
+   private void buildItemListData(){
+       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
+       itemViewModel.insert(new Item(R.drawable.ic_key, "Key"));
+       itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword"));
+       itemViewModel.insert(new Item(R.drawable.ic_quiver, "Quiver"));
+       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
+       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
+       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
+   }
+
     @Override
-    public void onItemClick(Item item, View view) {
+    public void onItemClick(Item item) {
 
     }
 }

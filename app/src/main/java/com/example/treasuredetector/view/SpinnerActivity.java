@@ -18,7 +18,5 @@ public class SpinnerActivity extends AppCompatActivity {
 
         trSpinner = (Spinner) findViewById(R.id.trSpinner);
 
-
-
     }
 }
