@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,7 +29,7 @@ import java.util.List;
  */
 public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListener {
     private ItemViewModel itemViewModel;
-
+    RecyclerView recyclerView;
     ItemAdapter adapter;
     FloatingActionButton fab;
     private List<Item> items = new ArrayList<>();
@@ -54,23 +55,24 @@ public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListe
         itemViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
 
         //only returns if activity is running in the foreground
-        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
-            @Override
-            public void onChanged(List<Item> items) {
-
-                adapter.setList(items);
-            }
-        });
-
-        buildItemListData();
-        InitRecyclerView(view);
+        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), items -> adapter.setList(items));
+        //update recyclerView
+        Toast.makeText(getContext().getApplicationContext(), "onChanged", Toast.LENGTH_SHORT).show();
+        recyclerView = view.findViewById(R.id.list);
+       BuildRecyclerView();
         return view;
 
     }
 
 
 
-
+    private void BuildRecyclerView() {
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new ItemAdapter();
+        //set the adapter
+        recyclerView.setAdapter(adapter);
+    }
 
     private void InitRecyclerView(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.list);
@@ -94,6 +96,12 @@ public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListe
 
     @Override
     public void onItemClick(Item item) {
-
+        Fragment fragment = ItemViewFragment.newInstance(item.getName());
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        //transaction.replace(R.id.fragment_container, fragment, "itemView_fragment");
+        transaction.hide(getActivity().getSupportFragmentManager().findFragmentById(R.id.itemViewFragment));
+        transaction.add(R.id.fragment_container,fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

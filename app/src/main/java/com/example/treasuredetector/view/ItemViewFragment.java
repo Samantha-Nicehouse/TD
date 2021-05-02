@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.treasuredetector.R;
 
@@ -35,7 +36,7 @@ public class ItemViewFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+
      * @return A new instance of fragment ItemViewFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -61,7 +62,8 @@ public class ItemViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View view = inflater.inflate(R.layout.fragment_item_view, container, false);
-
+        TextView categoryTV = view.findViewById(R.id.category_TV);
+        categoryTV.setText(mParam1);
        return view;
     }
 }
