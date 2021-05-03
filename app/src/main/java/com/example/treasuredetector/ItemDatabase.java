@@ -13,7 +13,7 @@ import com.example.treasuredetector.model.Item;
 
 import java.util.concurrent.Executors;
 
-@Database(entities = {Item.class, Geopoint.class}, version = 1)
+@Database(entities = {Item.class, Geopoint.class}, version = 2)
 public abstract class ItemDatabase extends RoomDatabase {
     //creates a singleton of the item database - used everywhere in app
     private static ItemDatabase instance;

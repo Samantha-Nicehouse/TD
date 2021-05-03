@@ -4,8 +4,10 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +22,7 @@ import com.example.treasuredetector.R;
 import com.example.treasuredetector.model.Item;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +35,7 @@ public class ItemFragment extends Fragment  {
     RecyclerView recyclerView;
     ItemAdapter adapter;
     FloatingActionButton fab;
-    private ItemRepository itemRepository;
-    private List<Item> items = new ArrayList<>();
+
 
     /**}
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -44,6 +46,7 @@ public class ItemFragment extends Fragment  {
 
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,21 +54,27 @@ public class ItemFragment extends Fragment  {
         //pass the fragment so that viewmodel knows which lifecycle to scope to
         //android activity will destroy the fragment when "this" is finished
 
-
-
         itemViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
-
-        //only returns if activity is running in the foreground
+        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
+            @Override
+            public void onChanged(List<Item> items) {
+                adapter.setItems(items);
+            }
+        });
+    /*    //only returns if activity is running in the foreground
         itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
             @Override
             public void onChanged(List<Item> items) {
                 adapter.setList(items);
+                //update recyclerView
+                Toast.makeText(getContext().getApplicationContext(), "onChanged", Toast.LENGTH_SHORT).show();
             }
-        });
-        //update recyclerView
-        Toast.makeText(getContext().getApplicationContext(), "onChanged", Toast.LENGTH_SHORT).show();
+        });*/
+        //adapter.setItemClickListener((v,);
         recyclerView = view.findViewById(R.id.list);
+
        BuildRecyclerView();
+
         return view;
 
     }
@@ -75,24 +84,22 @@ public class ItemFragment extends Fragment  {
     private void BuildRecyclerView() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ItemAdapter();
+        adapter = new ItemAdapter(new ItemAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("itemObject",new Gson().toJson(item));
+                Navigation.findNavController(view).navigate(R.id.detailFragment);
+            }
+        });
         //set the adapter
         recyclerView.setAdapter(adapter);
     }
 
-    private void InitRecyclerView(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.list);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        ItemAdapter adapter = new ItemAdapter();
-        //set the adapter
-        recyclerView.setAdapter(adapter);
-
-    }
 
    private void buildItemListData(){
-       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
-       itemViewModel.insert(new Item(R.drawable.ic_key, "Key"));
+     itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
+    itemViewModel.insert(new Item(R.drawable.ic_key, "Key"));
       itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword"));
        itemViewModel.insert(new Item(R.drawable.ic_quiver, "Quiver"));
       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));

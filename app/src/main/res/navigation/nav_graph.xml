@@ -24,9 +24,9 @@
         tools:layout="@layout/fragment_item_list" >
     </fragment>
     <fragment
-        android:id="@+id/itemViewFragment"
-        android:name="com.example.treasuredetector.view.ItemViewFragment"
-        android:label="fragment_item_view"
-        tools:layout="@layout/fragment_item_view"></fragment>
+        android:id="@+id/detailFragment"
+        android:name="com.example.treasuredetector.view.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" />
 
 </navigation>

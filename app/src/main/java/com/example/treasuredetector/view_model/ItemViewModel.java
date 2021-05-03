@@ -6,6 +6,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.treasuredetector.ItemRepository;
 import com.example.treasuredetector.model.Item;
@@ -50,6 +51,15 @@ public class ItemViewModel extends AndroidViewModel {
         repository.deleteAllItems();
     }
 
+    private MutableLiveData<Item> selected = new MutableLiveData<>();
+
+    public void setSelected(Item item) {
+        selected.setValue(item);
+    }
+
+    public MutableLiveData<Item> getSelected() {
+        return selected;
+    }
 
     public LiveData<List<Item>> getAllItems() {
         return allItems;

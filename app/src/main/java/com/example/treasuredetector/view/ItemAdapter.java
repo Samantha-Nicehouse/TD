@@ -21,10 +21,14 @@ import java.util.List;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
     private List<Item> items = new ArrayList<>();
-    private OnItemClickListener listener;
+    private ItemClickListener clickListener;
 
 
-    public ItemAdapter() {}
+    public ItemAdapter(){}
+
+    public ItemAdapter(ItemClickListener itemClickListener){
+        this.clickListener  = itemClickListener;
+    }
 
 
 
@@ -47,6 +51,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
     }
 
+    public void setItems(List<Item> items)
+    {
+        this.items = items;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return items.size();
@@ -57,35 +67,31 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
         notifyDataSetChanged();
     }
 
-    public Item getItemAt(int position) {
-        return items.get(position);
+    public interface ItemClickListener{
+        void onItemClick(Item item, View view);
     }
-
-    public interface OnItemClickListener {
-        void onItemClick(Item item);
-    }
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
-    }
-
-
 
     class ItemHolder extends RecyclerView.ViewHolder  {
-        public final View mView;
+
         public final ImageView mImageView;
         public final TextView mName;
         public final TextView mDate;
 
         public ItemHolder(View view) {
             super(view);
-            mView = view;
             mImageView = (ImageView) view.findViewById(R.id.item_imageView);
             mName = (TextView) view.findViewById(R.id.item_name);
             mDate = (TextView) view.findViewById(R.id.item_line);
 
+           view.setOnClickListener(v-> {
+               clickListener.onItemClick(items.get(getAbsoluteAdapterPosition()),v);
+           });
         }
 
 
     }
-}
+
+    }
+
+
 

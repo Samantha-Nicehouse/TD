@@ -27,6 +27,6 @@ public interface ItemDao {
 
 
     //live data creates an observable so we know when a new item is created
-    @Query("SELECT * FROM item_table ORDER BY mCurrentDate DESC")
+    @Query("SELECT * FROM item_table")
     LiveData<List<Item>> getAllItems();
 }
