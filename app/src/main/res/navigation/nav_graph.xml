@@ -27,6 +27,6 @@
         android:id="@+id/itemViewFragment"
         android:name="com.example.treasuredetector.view.ItemViewFragment"
         android:label="fragment_item_view"
-        tools:layout="@layout/fragment_item_list"></fragment>
+        tools:layout="@layout/fragment_item_view"></fragment>
 
 </navigation>

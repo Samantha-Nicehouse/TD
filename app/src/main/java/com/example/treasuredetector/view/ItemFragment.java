@@ -2,7 +2,6 @@ package com.example.treasuredetector.view;
 
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -27,7 +26,7 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  */
-public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListener {
+public class ItemFragment extends Fragment  {
     private ItemViewModel itemViewModel;
     RecyclerView recyclerView;
     ItemAdapter adapter;
@@ -55,7 +54,12 @@ public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListe
         itemViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
 
         //only returns if activity is running in the foreground
-        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), items -> adapter.setList(items));
+        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
+            @Override
+            public void onChanged(List<Item> items) {
+                adapter.setList(items);
+            }
+        });
         //update recyclerView
         Toast.makeText(getContext().getApplicationContext(), "onChanged", Toast.LENGTH_SHORT).show();
         recyclerView = view.findViewById(R.id.list);
@@ -94,14 +98,25 @@ public class ItemFragment extends Fragment implements ItemAdapter.ItemClickListe
        itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
    }
 
-    @Override
+   /* @Override
     public void onItemClick(Item item) {
         Fragment fragment = ItemViewFragment.newInstance(item.getName());
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        //transaction.replace(R.id.fragment_container, fragment, "itemView_fragment");
-        transaction.hide(getActivity().getSupportFragmentManager().findFragmentById(R.id.itemViewFragment));
-        transaction.add(R.id.fragment_container,fragment);
+        transaction.replace(R.id.fragment_container, ItemViewFragment.class, null);
+       // transaction.hide(getActivity().getSupportFragmentManager().findFragmentById(R.id.itemViewFragment));
+       // transaction.add(R.id.fragment_container,fragment);
         transaction.addToBackStack(null);
         transaction.commit();
-    }
+    }*/
+/*
+    @Override
+    public void onListItemClick(int position) {
+        Fragment fragment = ItemViewFragment.newInstance(items.get(position).getName());
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, ItemViewFragment.class, null);
+        // transaction.hide(getActivity().getSupportFragmentManager().findFragmentById(R.id.itemViewFragment));
+        // transaction.add(R.id.fragment_container,fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }*/
 }

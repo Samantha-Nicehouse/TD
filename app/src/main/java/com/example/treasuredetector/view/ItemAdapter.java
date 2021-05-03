@@ -1,11 +1,8 @@
 package com.example.treasuredetector.view;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +11,9 @@ import android.widget.TextView;
 
 import com.example.treasuredetector.R;
 import com.example.treasuredetector.model.Item;
-import com.google.android.gms.maps.SupportMapFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import it.sephiroth.android.library.bottomnavigation.OnItemClickListener;
 
 /**
 
@@ -27,16 +21,12 @@ import it.sephiroth.android.library.bottomnavigation.OnItemClickListener;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
     private List<Item> items = new ArrayList<>();
-    private ItemClickListener clickListener;
+    private OnItemClickListener listener;
 
 
     public ItemAdapter() {}
 
-    public ItemAdapter(List<Item> items, ItemClickListener clickListener) {
-        this.items = items;
-        this.clickListener = clickListener;
 
-    }
 
     @NonNull
     @Override
@@ -53,15 +43,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
         holder.mImageView.setImageResource(currentItem.getImageResource());
         holder.mName.setText(currentItem.getName());
         holder.mDate.setText(currentItem.getCurrentDate());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                clickListener.onItemClick(currentItem);
-            }
-        }
 
-       );
     }
 
     @Override
@@ -78,11 +61,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
         return items.get(position);
     }
 
-    public interface ItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(Item item);
     }
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
-    class ItemHolder extends RecyclerView.ViewHolder {
+
+
+    class ItemHolder extends RecyclerView.ViewHolder  {
         public final View mView;
         public final ImageView mImageView;
         public final TextView mName;
@@ -95,8 +83,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
             mName = (TextView) view.findViewById(R.id.item_name);
             mDate = (TextView) view.findViewById(R.id.item_line);
 
-
         }
+
+
     }
 }
 
