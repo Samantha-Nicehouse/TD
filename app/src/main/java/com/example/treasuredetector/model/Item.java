@@ -26,12 +26,13 @@ public class Item {
     public Calendar calendar = Calendar.getInstance();
     private String mCurrentDate;
 
-
-    public Item(int imageResource, String name) {
+    public Item(int imageResource, String name, String currentDate) {
         mImageResource = imageResource;
         mName = name;
-        mCurrentDate = DateFormat.getDateInstance().format(calendar.getTime());;
+        mCurrentDate = currentDate;;
     }
+
+
 
     public int getImageResource() {
         return mImageResource;

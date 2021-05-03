@@ -5,6 +5,7 @@ package com.example.treasuredetector.view;
 at different App states, which we can override to perform anything we want.*/
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -32,10 +33,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 destruction and other states of the App's lifecycle.*/
 public class MainActivity extends AppCompatActivity {
 
-    private ItemViewModel itemViewModel;
     NavController navController;
     BottomNavigationView bottomNavigationView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         bottomNavigationView = findViewById(R.id.bottomnav);
+
     }
 
     private void setupNavigation()

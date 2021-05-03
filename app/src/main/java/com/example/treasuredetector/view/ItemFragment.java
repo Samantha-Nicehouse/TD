@@ -72,7 +72,7 @@ public class ItemFragment extends Fragment  {
         });*/
         //adapter.setItemClickListener((v,);
         recyclerView = view.findViewById(R.id.list);
-
+        buildItemListData();
        BuildRecyclerView();
 
         return view;
@@ -89,7 +89,7 @@ public class ItemFragment extends Fragment  {
             public void onItemClick(Item item, View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("itemObject",new Gson().toJson(item));
-                Navigation.findNavController(view).navigate(R.id.detailFragment);
+                Navigation.findNavController(view).navigate(R.id.detailFragment,bundle);
             }
         });
         //set the adapter
@@ -98,13 +98,13 @@ public class ItemFragment extends Fragment  {
 
 
    private void buildItemListData(){
-     itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
-    itemViewModel.insert(new Item(R.drawable.ic_key, "Key"));
-      itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword"));
-       itemViewModel.insert(new Item(R.drawable.ic_quiver, "Quiver"));
-      itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
-       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
-       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
+     itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", ""));
+    itemViewModel.insert(new Item(R.drawable.ic_key, "Key", ""));
+      itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword", ""));
+       itemViewModel.insert(new Item(R.drawable.ic_quiver, "Quiver", ""));
+      itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "May 1, 2020"));
+       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "April 20, 1986"));
+       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "July 4, 1992"));
    }
 
    /* @Override

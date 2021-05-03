@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.example.treasuredetector.R;
 import com.example.treasuredetector.model.Item;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -46,6 +48,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
         Item currentItem = items.get(position);
         holder.mImageView.setImageResource(currentItem.getImageResource());
         holder.mName.setText(currentItem.getName());
+        if(currentItem.getCurrentDate().equals(""))
+        {
+
+            currentItem.setCurrentDate(DateFormat.getDateInstance().format(Calendar.getInstance().getTime()));
+        }
+
         holder.mDate.setText(currentItem.getCurrentDate());
 
 
