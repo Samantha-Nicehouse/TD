@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.treasuredetector.ItemRepository;
 import com.example.treasuredetector.R;
 
 import com.example.treasuredetector.model.Item;
@@ -31,6 +32,7 @@ public class ItemFragment extends Fragment  {
     RecyclerView recyclerView;
     ItemAdapter adapter;
     FloatingActionButton fab;
+    private ItemRepository itemRepository;
     private List<Item> items = new ArrayList<>();
 
     /**}
@@ -91,9 +93,9 @@ public class ItemFragment extends Fragment  {
    private void buildItemListData(){
        itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
        itemViewModel.insert(new Item(R.drawable.ic_key, "Key"));
-       itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword"));
+      itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword"));
        itemViewModel.insert(new Item(R.drawable.ic_quiver, "Quiver"));
-       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
+      itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
        itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
        itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet"));
    }
