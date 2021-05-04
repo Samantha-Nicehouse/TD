@@ -85,11 +85,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
         public final TextView mName;
         public final TextView mDate;
 
+
+
         public ItemHolder(View view) {
             super(view);
             mImageView = (ImageView) view.findViewById(R.id.item_imageView);
             mName = (TextView) view.findViewById(R.id.item_name);
             mDate = (TextView) view.findViewById(R.id.item_line);
+
 
            view.setOnClickListener(v-> {
                clickListener.onItemClick(items.get(getAbsoluteAdapterPosition()),v);

@@ -19,7 +19,9 @@ import android.widget.Toast;
 import com.example.treasuredetector.ItemRepository;
 import com.example.treasuredetector.R;
 
+import com.example.treasuredetector.model.Geopoint;
 import com.example.treasuredetector.model.Item;
+import com.example.treasuredetector.view_model.GeopointViewModel;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
@@ -32,6 +34,7 @@ import java.util.List;
  */
 public class ItemFragment extends Fragment  {
     private ItemViewModel itemViewModel;
+    private GeopointViewModel geopointViewModel;
     RecyclerView recyclerView;
     ItemAdapter adapter;
     FloatingActionButton fab;
@@ -105,6 +108,8 @@ public class ItemFragment extends Fragment  {
       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "May 1, 2020"));
        itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "April 20, 1986"));
        itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "July 4, 1992"));
+
+
    }
 
    /* @Override

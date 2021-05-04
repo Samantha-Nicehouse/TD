@@ -52,6 +52,7 @@ public class GeopointViewModel extends AndroidViewModel {
         }
 
 
+
         public LiveData<List<Geopoint>> getAllPoints() {
             return points;
         }

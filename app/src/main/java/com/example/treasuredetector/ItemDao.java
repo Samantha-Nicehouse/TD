@@ -26,6 +26,7 @@ public interface ItemDao {
     void deleteAllItems();
 
 
+
     //live data creates an observable so we know when a new item is created
     @Query("SELECT * FROM item_table")
     LiveData<List<Item>> getAllItems();

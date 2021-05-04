@@ -1,5 +1,7 @@
 package com.example.treasuredetector.model;
+import androidx.room.Embedded;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
@@ -7,19 +9,15 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static androidx.room.ForeignKey.CASCADE;
+
 @Entity(tableName = "item_table")
 public class Item {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private int mImageResource;
-
-    public int getmImageResource() {
-        return mImageResource;
-    }
-
-    public void setmImageResource(int mImageResource) {
-        this.mImageResource = mImageResource;
-    }
+    @Embedded
+    public Geopoint geopoint;
 
     private String mName;
     @Ignore
@@ -29,9 +27,15 @@ public class Item {
     public Item(int imageResource, String name, String currentDate) {
         mImageResource = imageResource;
         mName = name;
-        mCurrentDate = currentDate;;
+        mCurrentDate = currentDate;
+
     }
 
+
+
+    public void setImageResource(int ImageResource) {
+        this.mImageResource = ImageResource;
+    }
 
 
     public int getImageResource() {

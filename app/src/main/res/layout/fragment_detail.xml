@@ -33,7 +33,7 @@
         android:id="@+id/category_tv"
         android:layout_width="236dp"
         android:layout_height="57dp"
-        android:hint="category"
+        android:hint="@string/category"
         android:text="@string/Category"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
@@ -49,30 +49,49 @@
         android:layout_height="54dp"
         android:layout_marginTop="24dp"
         android:ems="10"
-        android:hint="date"
-        android:inputType="textMultiLine"
-        android:text="@string/Date"
+        android:hint="@string/Location"
+        android:text="@string/Location"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:layout_constraintVertical_bias="0.078" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/date_tv"
+        android:layout_width="303dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="52dp"
+        android:ems="10"
+        android:hint="@string/Date"
+        android:text="@string/Date"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.629"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="448dp" />
+        app:layout_constraintGuide_percent="0.25538972" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="353dp" />
+        app:layout_constraintGuide_percent="0.4145937" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="183dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

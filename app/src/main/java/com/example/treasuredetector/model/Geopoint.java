@@ -1,29 +1,38 @@
 package com.example.treasuredetector.model;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+
+import static androidx.room.ForeignKey.CASCADE;
+
 @Entity(tableName = "location_table")
 public class Geopoint {
     @PrimaryKey(autoGenerate = true)
     private int point_id;
-    String title;
     double lat;
     double lon;
+    private int id_fkItem;
 
 
     public Geopoint(){}
 
 
 
-    public Geopoint(String title, double lat, double lon) {
-        this.title = title;
+    public Geopoint(double lat, double lon) {
+
         this.lat = lat;
         this.lon = lon;
     }
 
-    public Geopoint(double lat, double lon) {
-        this.lat = lat;
-        this.lon = lon;
+
+
+    public int getId_fkItem() {
+        return id_fkItem;
+    }
+
+    public void setId_fkItem(int id_fkItem) {
+        this.id_fkItem = id_fkItem;
     }
 
     public int getPoint_id(){
@@ -33,13 +42,6 @@ public class Geopoint {
         this.point_id = point_id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public double getLat() {
         return lat;

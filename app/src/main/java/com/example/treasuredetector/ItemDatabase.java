@@ -13,7 +13,7 @@ import com.example.treasuredetector.model.Item;
 
 import java.util.concurrent.Executors;
 
-@Database(entities = {Item.class, Geopoint.class}, version = 3)
+@Database(entities = {Item.class, Geopoint.class}, version = 1)
 public abstract class ItemDatabase extends RoomDatabase {
     //creates a singleton of the item database - used everywhere in app
     private static ItemDatabase instance;
@@ -35,8 +35,11 @@ public abstract class ItemDatabase extends RoomDatabase {
                             Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    getInstance(context).itemDao().insert(new Item(R.drawable.ic_jewelry, "Jewelry", ""));
-                                    getInstance(context).geopointDao().insert(new Geopoint("Home", 156.1512448,0.2137856));
+                                   getInstance(context).itemDao().insert(new Item(R.drawable.ic_jewelry, "Jewelry", "May 19, 2018" ));
+                                   getInstance(context).geopointDao().insert(new Geopoint( 156.1512448,0.2137856));
+                                    getInstance(context).geopointDao().insert( new Geopoint(56.1512448,0.2137856));
+                                    getInstance(context).geopointDao().insert(new Geopoint(56.1512000,0.2137000));
+                                    getInstance(context).geopointDao().insert(new Geopoint(56.1512400,0.21378500));
                                 }
                             });
                         }
