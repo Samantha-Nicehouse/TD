@@ -3,13 +3,9 @@ package com.example.treasuredetector;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,21 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
+import com.example.treasuredetector.view_model.GeopointViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.GeoPoint;
 
 import static android.widget.Toast.*;
 
@@ -42,9 +31,9 @@ public class MapsFragment extends Fragment {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     LocationManager locationManager;
     private GoogleMap mMap;
-    FirebaseFirestore db;
+   public GeopointViewModel geopointViewModel;
 
-    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private  static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
 
@@ -68,34 +57,37 @@ public class MapsFragment extends Fragment {
             //when map is loaded
             mMap = googleMap;
 
-            // creating a variable for document reference.
-            DocumentReference documentReference = db.collection("MapsData").document("7QWDor9vozLaHdFYV9kh");
 
-            // calling document reference class with on snap shot listener.
-            documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            //when map is loaded
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
-                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                    if (value != null && value.exists()) {
-                        // below line is to create a geo point and we are getting
-                        // geo point from firebase and setting to it.
-                        GeoPoint geoPoint = value.getGeoPoint("geoPoint");
+                public void onMapClick(LatLng latLng) {
+                    //when clicked on map
+                    //initialize marker options
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    //set position of marker
+                    markerOptions.position(latLng);
+                    //Set title of marker
+                    MarkerOptions title = markerOptions.title(latLng.latitude + ": " + latLng.longitude);
+                    //remove all marker
+                    googleMap.clear();
+                    //Animating to zoom the marker
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            latLng, 10
+                    ));
+                    //Add marker on map
+                    googleMap.addMarker(title);
 
-                        // getting latitude and longitude from geo point
-                        // and setting it to our location.
-                        LatLng location = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-
-                        // adding marker to each location on google maps
-                        mMap.addMarker(new MarkerOptions().position(location).title("Marker"));
-
-                        // below line is use to move camera.
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-                    } else {
-                        Toast.makeText(getContext(), "Error found is " + error, Toast.LENGTH_SHORT).show();
-                    }
                 }
             });
+            LatLng aarhus = new LatLng(56, 10);
+
+            googleMap.addMarker(new MarkerOptions().position(aarhus).title("Marker in Aarhus"));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(aarhus));
         }
     };
+
+
 
     private Boolean mLocationPermissionGranted = false;
 
@@ -112,75 +104,17 @@ public class MapsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // initializing our firebase firestore.
-        db = FirebaseFirestore.getInstance();
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
         if (mapFragment != null) {
             mapFragment.onCreate(savedInstanceState);
             mapFragment.onResume();
             mapFragment.getMapAsync(callback);
-            getLocationPermission();
+
         }
     }
 
-    private void getLocationPermission() {
-        Log.d(TAG, "getLocationPermission: getting location permissions");
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION};
-
-        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionGranted = true;
-            } else {
-                ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
-            }
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        }
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult: called.");
-        mLocationPermissionGranted = false;
-
-        switch (requestCode) {
-            case LOCATION_PERMISSION_REQUEST_CODE: {
-                if (grantResults.length > 0) {
-                    for (int i = 0; i < grantResults.length; i++) {
-                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                            mLocationPermissionGranted = false;
-                            Log.d(TAG, "onRequestPermissionsResult: permission failed");
-                            return;
-                        }
-                    }
-                    Log.d(TAG, "onRequestPermissionsResult: permission granted");
-                    mLocationPermissionGranted = true;
-
-                }
-            }
-        }
-
-    }
-
-
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    public void onConnectionSuspended(int i) {
-
-    }
-
-
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
 
 }

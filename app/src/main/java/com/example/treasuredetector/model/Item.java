@@ -16,8 +16,8 @@ public class Item {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private int mImageResource;
-    @Embedded
-    public Geopoint geopoint;
+  //  @Embedded
+   // public Geopoint geopoint;
 
     private String mName;
     @Ignore

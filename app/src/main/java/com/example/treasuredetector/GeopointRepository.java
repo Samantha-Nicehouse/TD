@@ -40,6 +40,7 @@ public class GeopointRepository {
     {
         executorService.execute(() -> geopointDao.insert(point));
     }
+
     public void update(Geopoint point)
     {
         executorService.execute(() -> geopointDao.update(point));

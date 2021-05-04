@@ -26,8 +26,7 @@ public interface GeopointDao {
     @Query("DELETE FROM location_table")
     void deleteAllPoints();
 
-   /* @Query("SELECT * FROM location_table WHERE id_fkItem = :id")
-    LiveData<List<Geopoint>> getItemsWithGeopoints(int id);*/
+
 
 
     //live data creates an observable so we know when a new item is created
