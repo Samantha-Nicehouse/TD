@@ -62,7 +62,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
     public void setItems(List<Item> items)
     {
         this.items = items;
-        notifyDataSetChanged();
+        notifyDataSetChanged();//changes to detail view
     }
 
     @Override

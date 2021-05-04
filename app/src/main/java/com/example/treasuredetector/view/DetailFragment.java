@@ -17,11 +17,11 @@ import com.google.gson.Gson;
 
 public class DetailFragment extends Fragment {
 
- TextView  itemName;
- TextView locationName;
- ImageView categoryImage;
+public  TextView  itemName;
+ public TextView locationName;
+ public ImageView categoryImage;
  String itemJson;
- Item viewItem;
+  Item viewItem;
     public DetailFragment() {
         // Required empty public constructor
     }
@@ -40,9 +40,9 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View view =  inflater.inflate(R.layout.fragment_detail, container, false);
-       itemName = view.findViewById(R.id.category_tv);
-       locationName = view.findViewById(R.id.location_tv);
-       categoryImage = view.findViewById(R.id.category_iv);
+       itemName = (TextView) view.findViewById(R.id.category_tv);
+       locationName = (TextView) view.findViewById(R.id.location_tv);
+       categoryImage = (ImageView) view.findViewById(R.id.category_iv);
 
        if(getArguments() != null && getArguments().containsKey("itemObject"))
        {

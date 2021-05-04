@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,60 +15,63 @@
 
     <ImageView
         android:id="@+id/category_iv"
-        android:layout_width="104dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="88dp"
         android:layout_marginTop="56dp"
         android:contentDescription="@string/Placeholder"
         android:src="@drawable/ic_bullets"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toStartOf="@+id/category_tv"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_conversion_absoluteHeight="143dp"
         tools:layout_conversion_absoluteWidth="99dp" />
 
-    <EditText
+    <TextView
         android:id="@+id/category_tv"
-        android:layout_width="252dp"
-        android:layout_height="114dp"
+        android:layout_width="236dp"
+        android:layout_height="57dp"
         android:hint="category"
         android:text="@string/Category"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.504"
+        app:layout_constraintVertical_bias="0.577"
         tools:layout_conversion_absoluteHeight="57dp"
         tools:layout_conversion_absoluteWidth="43dp" />
 
-    <EditText
+    <TextView
         android:id="@+id/location_tv"
-        android:layout_width="295dp"
-        android:layout_height="71dp"
+        android:layout_width="303dp"
+        android:layout_height="54dp"
         android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="date"
         android:inputType="textMultiLine"
         android:text="@string/Date"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        app:layout_constraintVertical_bias="0.078" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="407dp" />
+        app:layout_constraintGuide_end="448dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="265dp" />
+        app:layout_constraintGuide_end="353dp" />
 
 
 
