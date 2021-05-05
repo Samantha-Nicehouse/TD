@@ -36,10 +36,10 @@ public abstract class ItemDatabase extends RoomDatabase {
                             Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                   getInstance(context).itemDao().insert(new Item(R.drawable.ic_jewelry, "Jewelry", "May 19, 2018" ));
-                                  // getInstance(context).geopointDao().insert(new Geopoint( 56.1512448,0.2137856));
-                                // getInstance(context).geopointDao().insert( new Geopoint(56.1512448,0.2137856));
-                                //  getInstance(context).geopointDao().insert(new Geopoint(56.1512400,0.21378500));
+                                   getInstance(context).itemDao().insert(new Item(R.drawable.ic_jewelry, "Jewelry", "May 19, 2018", ""));
+                                  getInstance(context).geopointDao().insert(new Geopoint( 56.1512448,0.2137856));
+                               getInstance(context).geopointDao().insert( new Geopoint(56.1512448,0.2137856));
+                                 getInstance(context).geopointDao().insert(new Geopoint(56.1512400,0.21378500));
                                 }
                             });
                         }

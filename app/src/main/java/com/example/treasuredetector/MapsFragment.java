@@ -132,7 +132,8 @@ public class MapsFragment extends Fragment {
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation != null) {
                                 moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                                        DEFAULT_ZOOM, "Updated");
+                                        DEFAULT_ZOOM, "Updated Location");
+                               addLocationToDb(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()));
                             }
                         } else {
                             Log.d(TAG, "onComplete: Current location is null");
@@ -152,7 +153,11 @@ public class MapsFragment extends Fragment {
         MarkerOptions options = new MarkerOptions().position(latLng).title(title);
         mMap.addMarker(options);
 
-
+    }
+    private void addLocationToDb(LatLng latLng){
+        Log.d(TAG, "addLocationToDB:" + latLng.latitude + latLng.longitude);
+        Geopoint geopoint = new Geopoint(latLng.latitude,latLng.longitude);
+        geopointViewModel.insert(geopoint);
     }
 }
 

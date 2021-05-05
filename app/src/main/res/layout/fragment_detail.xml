@@ -15,14 +15,14 @@
 
     <ImageView
         android:id="@+id/category_iv"
-        android:layout_width="100dp"
-        android:layout_height="88dp"
+        android:layout_width="97dp"
+        android:layout_height="57dp"
         android:layout_marginTop="56dp"
         android:contentDescription="@string/Placeholder"
         android:src="@drawable/ic_bullets"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toStartOf="@+id/category_tv"
-        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintHorizontal_bias="0.72"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
@@ -44,31 +44,26 @@
         tools:layout_conversion_absoluteWidth="43dp" />
 
     <TextView
-        android:id="@+id/location_tv"
-        android:layout_width="303dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:hint="@string/Location"
-        android:text="@string/Location"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
         android:id="@+id/date_tv"
         android:layout_width="303dp"
         android:layout_height="54dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="@string/Date"
         android:text="@string/Date"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.629"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+
+    <ImageView
+        android:id="@+id/detail_image"
+        android:layout_width="244dp"
+        android:layout_height="156dp"
+        android:src ="@drawable/ic_outline_image_24"
+        android:contentDescription="@string/Placeholder"
+        app:layout_constraintBottom_toTopOf="@+id/guideline6"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
@@ -77,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.25538972" />
+        app:layout_constraintGuide_begin="154dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -91,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="183dp" />
+        app:layout_constraintGuide_begin="488dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

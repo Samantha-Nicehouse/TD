@@ -3,12 +3,14 @@ package com.example.treasuredetector.view;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.treasuredetector.R;
 import com.example.treasuredetector.model.Item;
 
@@ -16,6 +18,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static com.example.treasuredetector.R.mipmap.coins;
 
 /**
 
@@ -52,9 +56,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
         {
 
             currentItem.setCurrentDate(DateFormat.getDateInstance().format(Calendar.getInstance().getTime()));
-        }
+        }else {
 
-        holder.mDate.setText(currentItem.getCurrentDate());
+            holder.mDate.setText(currentItem.getCurrentDate());
+        }
+        if(currentItem.getImageURI().equals(""))
+        {
+            holder.mItemImage.setImageURI(Uri.parse("android.resource://com.example.treasuredetector/mipmap/ic_launcher.jpg"));
+        }else{
+            Glide.with(holder.mItemImage).load(currentItem.getImageURI()).into(holder.mItemImage);
+        }
 
 
     }
@@ -84,6 +95,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
         public final ImageView mImageView;
         public final TextView mName;
         public final TextView mDate;
+        public final ImageView mItemImage;
 
 
 
@@ -92,6 +104,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
             mImageView = (ImageView) view.findViewById(R.id.item_imageView);
             mName = (TextView) view.findViewById(R.id.item_name);
             mDate = (TextView) view.findViewById(R.id.item_line);
+            mItemImage = (ImageView) view.findViewById(R.id.detail_image);
 
 
            view.setOnClickListener(v-> {

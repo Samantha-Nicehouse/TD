@@ -3,8 +3,6 @@ package com.example.treasuredetector.view;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -14,19 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.treasuredetector.ItemRepository;
 import com.example.treasuredetector.R;
 
-import com.example.treasuredetector.model.Geopoint;
 import com.example.treasuredetector.model.Item;
 import com.example.treasuredetector.view_model.GeopointViewModel;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,13 +95,12 @@ public class ItemFragment extends Fragment  {
 
 
    private void buildItemListData(){
-     itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", ""));
-    //itemViewModel.insert(new Item(R.drawable.ic_key, "Key", ""));
-      //itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword", ""));
-       itemViewModel.insert(new Item(R.drawable.ic_quiver, "Quiver", ""));
-      itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "May 1, 2020"));
-       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "April 20, 1986"));
-       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "July 4, 1992"));
+       //itemViewModel.insert(new Item(R.drawable.ic_key, "Key", ""));
+       //itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword", ""));
+       itemViewModel.insert(new Item(R.drawable.ic_quiver,  "Quiver", "", ""));
+       itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Coins", "May 1, 2020", "android.resource://com.example.treasuredetector/drawable/coins.jpg"));
+       itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Bullet", "April 20, 1986", ""));
+       itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Bullet", "July 4, 1992", ""));
 
    }
 

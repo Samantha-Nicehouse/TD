@@ -1,40 +1,51 @@
 package com.example.treasuredetector.model;
-import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import static androidx.room.ForeignKey.CASCADE;
+
+import java.util.Calendar;
 
 @Entity(tableName = "item_table")
 public class Item {
     @PrimaryKey(autoGenerate = true)
     private int item_id;
     private int mImageResource;
-   @Embedded
-    public Geopoint geopoint;
+    private String mImageURI;
+
+  // private int id_fkGeopoint;
 
     private String mName;
     @Ignore
     public Calendar calendar = Calendar.getInstance();
     private String mCurrentDate;
 
-    public Item(int imageResource, String name, String currentDate) {
+
+    public Item(int imageResource, String name, String currentDate, String imageURI) {
         mImageResource = imageResource;
         mName = name;
         mCurrentDate = currentDate;
-       // geopoint.setLat(lat);
-       // geopoint.setLon(lon);
-       // geopoint.setId_fkItem(item_id);
+        mImageURI = imageURI;
+
 
     }
+/*
+    public int getId_fkGeopoint(){
+        return id_fkGeopoint;
+    }
 
+    public int setId_fkGeopoint(){
+        this.id_fkGeopoint = id_fkGeopoint;
+    }*/
 
+   public String getImageURI(){
+        return mImageURI;
+    }
+
+    public void setItemPic(String imageURI){
+       this.mImageURI = imageURI;
+    }
 
     public void setImageResource(int ImageResource) {
         this.mImageResource = ImageResource;
