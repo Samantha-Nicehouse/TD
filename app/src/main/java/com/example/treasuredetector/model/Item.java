@@ -14,10 +14,10 @@ import static androidx.room.ForeignKey.CASCADE;
 @Entity(tableName = "item_table")
 public class Item {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int item_id;
     private int mImageResource;
-  //  @Embedded
-   // public Geopoint geopoint;
+   @Embedded
+    public Geopoint geopoint;
 
     private String mName;
     @Ignore
@@ -28,6 +28,9 @@ public class Item {
         mImageResource = imageResource;
         mName = name;
         mCurrentDate = currentDate;
+       // geopoint.setLat(lat);
+       // geopoint.setLon(lon);
+       // geopoint.setId_fkItem(item_id);
 
     }
 
@@ -52,10 +55,15 @@ public class Item {
         this.mCurrentDate = mCurrentDate;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setItem_id(int id) {
+        this.item_id = id;
     }
-    public int getId(){return id;}
+
+    public int getItem_id() {
+        return item_id;
+    }
+
+
 
 }
 

@@ -102,13 +102,12 @@ public class ItemFragment extends Fragment  {
 
    private void buildItemListData(){
      itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", ""));
-    itemViewModel.insert(new Item(R.drawable.ic_key, "Key", ""));
-      itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword", ""));
+    //itemViewModel.insert(new Item(R.drawable.ic_key, "Key", ""));
+      //itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword", ""));
        itemViewModel.insert(new Item(R.drawable.ic_quiver, "Quiver", ""));
       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "May 1, 2020"));
        itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "April 20, 1986"));
        itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "July 4, 1992"));
-
 
    }
 

@@ -12,7 +12,7 @@ public class Geopoint {
     private int point_id;
     double lat;
     double lon;
-   // private int id_fkItem;
+   private int id_fkItem;
 
 
     public Geopoint(){}
@@ -26,14 +26,14 @@ public class Geopoint {
     }
 
 
-/*
-    public int getId_fkItem() {
+
+   public int getId_fkItem() {
         return id_fkItem;
     }
 
     public void setId_fkItem(int id_fkItem) {
         this.id_fkItem = id_fkItem;
-    }*/
+    }
 
     public int getPoint_id(){
         return point_id;}
