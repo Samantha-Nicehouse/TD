@@ -58,16 +58,7 @@ public class ItemFragment extends Fragment  {
                 adapter.setItems(items);
             }
         });
-    /*    //only returns if activity is running in the foreground
-        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
-            @Override
-            public void onChanged(List<Item> items) {
-                adapter.setList(items);
-                //update recyclerView
-                Toast.makeText(getContext().getApplicationContext(), "onChanged", Toast.LENGTH_SHORT).show();
-            }
-        });*/
-        //adapter.setItemClickListener((v,);
+
         recyclerView = view.findViewById(R.id.list);
         buildItemListData();
        BuildRecyclerView();
@@ -98,7 +89,7 @@ public class ItemFragment extends Fragment  {
        //itemViewModel.insert(new Item(R.drawable.ic_key, "Key", ""));
        //itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword", ""));
        itemViewModel.insert(new Item(R.drawable.ic_quiver,  "Quiver", "", ""));
-       itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Coins", "May 1, 2020", "android.resource://com.example.treasuredetector/drawable/coins.jpg"));
+       itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Coins", "May 1, 2020", ""));
        itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Bullet", "April 20, 1986", ""));
        itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Bullet", "July 4, 1992", ""));
 

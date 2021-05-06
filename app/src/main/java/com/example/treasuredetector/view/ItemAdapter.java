@@ -60,12 +60,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
             holder.mDate.setText(currentItem.getCurrentDate());
         }
+        /*
         if(currentItem.getImageURI().equals(""))
         {
             holder.mItemImage.setImageURI(Uri.parse("android.resource://com.example.treasuredetector/mipmap/ic_launcher.jpg"));
         }else{
             Glide.with(holder.mItemImage).load(currentItem.getImageURI()).into(holder.mItemImage);
-        }
+        }*/
 
 
     }

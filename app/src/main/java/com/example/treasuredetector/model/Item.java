@@ -12,7 +12,7 @@ public class Item {
     @PrimaryKey(autoGenerate = true)
     private int item_id;
     private int mImageResource;
-    private String mImageURI;
+   private String mImageURI;
 
   // private int id_fkGeopoint;
 
@@ -26,8 +26,7 @@ public class Item {
         mImageResource = imageResource;
         mName = name;
         mCurrentDate = currentDate;
-        mImageURI = imageURI;
-
+       mImageURI = imageURI;
 
     }
 /*
