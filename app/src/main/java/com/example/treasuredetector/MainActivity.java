@@ -1,37 +1,29 @@
-package com.example.treasuredetector.view;
+package com.example.treasuredetector;
 
 /*Activity is nothing but a java class in Android which has some
  pre-defined functions which are triggered
 at different App states, which we can override to perform anything we want.*/
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.ListFragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 
-import com.example.treasuredetector.MapsFragment;
 import com.example.treasuredetector.R;
 
-import com.example.treasuredetector.view_model.ItemViewModel;
+import com.example.treasuredetector.model.User;
+import com.example.treasuredetector.view_model.UserViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 
 
 /*apart from controlling the app, Activity also controls creation,
 destruction and other states of the App's lifecycle.*/
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "TreasureDetectorMainActivity";
 
     NavController navController;
     BottomNavigationView bottomNavigationView;
@@ -39,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initViews();
         setupNavigation();
     }

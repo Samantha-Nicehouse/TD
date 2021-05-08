@@ -19,6 +19,20 @@
         <item>Key</item>
         <item>Knife</item>
     </string-array>
+
+    <string-array name="treasure_category">
+        <item>Bottle Cap</item>
+        <item>Bow and Arrow</item>
+        <item>Bullets</item>
+        <item>Coins</item>
+        <item>Jewelry</item>
+        <item>Key</item>
+        <item>Miscellaneous</item>
+        <item>Quiver</item>
+        <item>Sword</item>
+    </string-array>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="category">category</string>

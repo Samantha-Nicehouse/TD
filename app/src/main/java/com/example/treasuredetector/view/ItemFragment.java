@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 
 import com.example.treasuredetector.R;
 
+import com.example.treasuredetector.adapter.ItemAdapter;
 import com.example.treasuredetector.model.Item;
-import com.example.treasuredetector.view_model.GeopointViewModel;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
@@ -26,22 +26,20 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  */
-public class ItemFragment extends Fragment  {
+public class ItemFragment extends Fragment {
     private ItemViewModel itemViewModel;
-    private GeopointViewModel geopointViewModel;
     RecyclerView recyclerView;
     ItemAdapter adapter;
     FloatingActionButton fab;
 
 
-    /**}
+    /**
+     * }
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public ItemFragment() {
     }
-
-
 
 
     @Override
@@ -58,15 +56,23 @@ public class ItemFragment extends Fragment  {
                 adapter.setItems(items);
             }
         });
-
+    /*    //only returns if activity is running in the foreground
+        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
+            @Override
+            public void onChanged(List<Item> items) {
+                adapter.setList(items);
+                //update recyclerView
+                Toast.makeText(getContext().getApplicationContext(), "onChanged", Toast.LENGTH_SHORT).show();
+            }
+        });*/
+        //adapter.setItemClickListener((v,);
         recyclerView = view.findViewById(R.id.list);
         buildItemListData();
-       BuildRecyclerView();
+        BuildRecyclerView();
 
         return view;
 
     }
-
 
 
     private void BuildRecyclerView() {
@@ -76,8 +82,8 @@ public class ItemFragment extends Fragment  {
             @Override
             public void onItemClick(Item item, View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("itemObject",new Gson().toJson(item));
-                Navigation.findNavController(view).navigate(R.id.detailFragment,bundle);
+                bundle.putString("itemObject", new Gson().toJson(item));
+                // Navigation.findNavController(view).navigate(R.id.detailFragment,bundle);
             }
         });
         //set the adapter
@@ -85,15 +91,16 @@ public class ItemFragment extends Fragment  {
     }
 
 
-   private void buildItemListData(){
-       //itemViewModel.insert(new Item(R.drawable.ic_key, "Key", ""));
-       //itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword", ""));
-       itemViewModel.insert(new Item(R.drawable.ic_quiver,  "Quiver", "", ""));
-       itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Coins", "May 1, 2020", ""));
-       itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Bullet", "April 20, 1986", ""));
-       itemViewModel.insert(new Item(R.drawable.ic_bullets,  "Bullet", "July 4, 1992", ""));
+    private void buildItemListData() {
+//     itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", ""));
+//    //itemViewModel.insert(new Item(R.drawable.ic_key, "Key", ""));
+//      //itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword", ""));
+//       itemViewModel.insert(new Item(R.drawable.ic_quiver, "Quiver", ""));
+//      itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "May 1, 2020"));
+//       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "April 20, 1986"));
+//       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "July 4, 1992"));
 
-   }
+    }
 
    /* @Override
     public void onItemClick(Item item) {

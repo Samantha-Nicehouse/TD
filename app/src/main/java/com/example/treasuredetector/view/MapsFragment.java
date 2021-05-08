@@ -1,4 +1,4 @@
-package com.example.treasuredetector;
+package com.example.treasuredetector.view;
 
 
 import androidx.annotation.NonNull;
@@ -6,13 +6,10 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -20,27 +17,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.example.treasuredetector.model.Geopoint;
-import com.example.treasuredetector.view_model.GeopointViewModel;
-import com.example.treasuredetector.view_model.ItemViewModel;
+import com.example.treasuredetector.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static android.widget.Toast.*;
 
@@ -50,9 +39,8 @@ public class MapsFragment extends Fragment {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     LocationManager locationManager;
     private GoogleMap mMap;
-    List<LatLng> latLngList = new ArrayList<>();
+
     private Boolean mLocationPermissionGranted = false;
-   // private GeopointViewModel geopointViewModel =  new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GeopointViewModel.class);
     private static final float DEFAULT_ZOOM = 15f;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -78,11 +66,8 @@ public class MapsFragment extends Fragment {
             //when map is loaded
             mMap = googleMap;
 
-
             if (mLocationPermissionGranted) {
                 getDeviceLocation();
-
-
                 if (ActivityCompat.checkSelfPermission(getContext().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext().getApplicationContext(),
                         android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -90,7 +75,6 @@ public class MapsFragment extends Fragment {
                 }
                 mMap.setMyLocationEnabled(true);
             }
-
         }
     };
 
@@ -116,6 +100,7 @@ public class MapsFragment extends Fragment {
                 mLocationPermissionGranted = true;
                 SupportMapFragment mapFragment =
                         (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
+
                 mapFragment.onResume();
                 mapFragment.getMapAsync(callback);
 
@@ -143,11 +128,8 @@ public class MapsFragment extends Fragment {
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation != null) {
                                 moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                                        DEFAULT_ZOOM, "Updated Location");
-
+                                        DEFAULT_ZOOM, "Updated");
                             }
-
-
                         } else {
                             Log.d(TAG, "onComplete: Current location is null");
                             Toast.makeText(getContext(), " unable to get current location", Toast.LENGTH_SHORT).show();
@@ -166,22 +148,8 @@ public class MapsFragment extends Fragment {
         MarkerOptions options = new MarkerOptions().position(latLng).title(title);
         mMap.addMarker(options);
 
-    }
-    /*
-    private void addLocationToDb(LatLng latLng){
-        //Log.d(TAG, "addLocationToDB:" + latLng.latitude + latLng.longitude);
-        Geopoint geopoint = new Geopoint(latLng.latitude,latLng.longitude);
-        geopointViewModel.insert(geopoint);
-    }
 
-    private void getLocationFromDatabase(){
-        List<Geopoint> points = geopointViewModel.getAllPoints().getValue();
-        for(Geopoint pt : points ){
-            LatLng coordinate = new LatLng(pt.getLat(),pt.getLon());
-            Marker marker = mMap.addMarker(new MarkerOptions().position(coordinate).title("Marker in a loop"));
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-        }
-    }*/
+    }
 }
 
 

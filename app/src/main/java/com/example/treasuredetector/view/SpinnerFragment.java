@@ -49,7 +49,6 @@ public class SpinnerFragment extends Fragment implements OnItemSelectedListener 
         categories.add("Knife");
         categories.add("Misc");
 
-
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter(view.getContext(),

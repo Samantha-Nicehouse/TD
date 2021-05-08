@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.treasuredetector.ItemRepository;
+import com.example.treasuredetector.repository.ItemRepository;
 import com.example.treasuredetector.model.Item;
 
 import java.util.List;

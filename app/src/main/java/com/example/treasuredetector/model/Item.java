@@ -1,79 +1,86 @@
 package com.example.treasuredetector.model;
+import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import static androidx.room.ForeignKey.CASCADE;
 
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
+import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "item_table")
 public class Item {
+
     @PrimaryKey(autoGenerate = true)
-    private int item_id;
-    private int mImageResource;
-   private String mImageURI;
+    private int id;
 
-  // private int id_fkGeopoint;
+    private String title;
 
-    private String mName;
-    @Ignore
-    public Calendar calendar = Calendar.getInstance();
-    private String mCurrentDate;
+    private String description;
+
+    private String category;
+
+    private long time;
+
+    private double latitude;
+
+    private double longitude;
+
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    private byte[] image;
 
 
-    public Item(int imageResource, String name, String currentDate, String imageURI) {
-        mImageResource = imageResource;
-        mName = name;
-        mCurrentDate = currentDate;
-       mImageURI = imageURI;
-
-    }
-/*
-    public int getId_fkGeopoint(){
-        return id_fkGeopoint;
-    }
-
-    public int setId_fkGeopoint(){
-        this.id_fkGeopoint = id_fkGeopoint;
-    }*/
-
-   public String getImageURI(){
-        return mImageURI;
+    public Item(String title, String description, String category, long time, double latitude, double longitude) {
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.time = time;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public void setItemPic(String imageURI){
-       this.mImageURI = imageURI;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setImageResource(int ImageResource) {
-        this.mImageResource = ImageResource;
+    public int getId() {
+        return id;
     }
 
-
-    public int getImageResource() {
-        return mImageResource;
-    }
-    public String getName() {
-        return mName;
-    }
-    public String getCurrentDate() {
-        return mCurrentDate;
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
-    public void setCurrentDate(String mCurrentDate) {
-        this.mCurrentDate = mCurrentDate;
+    public String getTitle() {
+        return title;
     }
 
-    public void setItem_id(int id) {
-        this.item_id = id;
+    public String getDescription() {
+        return description;
     }
 
-    public int getItem_id() {
-        return item_id;
+    public String getCategory() {
+        return category;
     }
 
+    public long getTime() {
+        return time;
+    }
 
+    public double getLatitude() {
+        return latitude;
+    }
 
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
 }
 

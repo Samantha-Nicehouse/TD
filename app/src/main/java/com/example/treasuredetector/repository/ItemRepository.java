@@ -1,13 +1,14 @@
-package com.example.treasuredetector;
+package com.example.treasuredetector.repository;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 
 import androidx.core.os.HandlerCompat;
 import androidx.lifecycle.LiveData;
 
+import com.example.treasuredetector.database.TreasureDetectorDatabase;
+import com.example.treasuredetector.dao.ItemDao;
 import com.example.treasuredetector.model.Item;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class ItemRepository {
 
     public ItemRepository(Application application)
     {
-        ItemDatabase database = ItemDatabase.getInstance(application);
+        TreasureDetectorDatabase database = TreasureDetectorDatabase.getInstance(application);
         itemDao = database.itemDao(); //assign database
         allItems = itemDao.getAllItems();
         executorService = Executors.newFixedThreadPool(4);
