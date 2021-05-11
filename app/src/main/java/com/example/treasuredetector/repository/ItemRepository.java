@@ -32,18 +32,18 @@ public class ItemRepository {
     }
 //the following methods are the API that passes items to the repository abstractions layer
     //executes a thread to insert the item
-    public long insert(Item item)
+    public void insert(Item item)
     {
-        return itemDao.insert(item);
+        executorService.execute(() ->itemDao.insert(item));
     }
-    public int update(Item item)
+    public void update(Item item)
     {
-        return itemDao.update(item);
+        executorService.execute(() ->itemDao.update(item));
 
     }
-    public int delete(Item item)
+    public void delete(Item item)
     {
-        return itemDao.delete(item);
+        executorService.execute(() ->itemDao.delete(item));
 
     }
     public LiveData<List<Item>> getAllItems() {

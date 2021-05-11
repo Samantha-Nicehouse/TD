@@ -31,20 +31,19 @@ public class ItemViewModel extends AndroidViewModel {
 
     //activity only has references to the viewmodel not to the repository
     //so we create these wrapper methods
-    public long insert(Item item)
+    public void insert(Item item)
     {
-        return repository.insert(item);
+        repository.insert(item);
     }
 
-    public int update(Item item)
+    public void update(Item item)
     {
-        return repository.update(item);
-
+        repository.update(item);
     }
 
-    public int delete(Item item)
+    public void delete(Item item)
     {
-        return repository.delete(item);
+        repository.delete(item);
     }
 
     public void deleteAll()

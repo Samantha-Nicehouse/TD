@@ -2,6 +2,7 @@ package com.example.treasuredetector;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.os.HandlerCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
@@ -9,14 +10,13 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,12 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.treasuredetector.helper.DialogHelper;
@@ -45,9 +43,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 //In this activity we add, view, edit and delete items
-
 
 public class ItemActivity extends AppCompatActivity {
 
@@ -82,13 +81,17 @@ public class ItemActivity extends AppCompatActivity {
     MenuItem menuItemSave;
     MenuItem menuItemDelete;
 
+    ExecutorService executorService = Executors.newFixedThreadPool(4);
+    Handler mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper());
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
 
-        initViews();
 
+        initViews();
 
         helper = new Helper(ItemActivity.this);
         dialogHelper = new DialogHelper(ItemActivity.this);
@@ -135,7 +138,7 @@ public class ItemActivity extends AppCompatActivity {
 
             if (item.getImageName() != null) {
                 //Getting image from stoarge then display is a heavy task hence we do it on a background thread
-                new LoadImageTask2().execute(item);
+                loadImageOfSelectedItem(item);
             }
         }
 
@@ -172,7 +175,7 @@ public class ItemActivity extends AppCompatActivity {
         dialogHelper.showDialog();
 
         //Inserting a new row in db is also time consuming hence we do it in a background thread so our ui don't lag
-        new AddItemToDBTask().execute(item);
+        addItemToDb(item);
     }
 
     private void updateInDB() {
@@ -206,7 +209,7 @@ public class ItemActivity extends AppCompatActivity {
         dialogHelper.showDialog();
 
         //Updating a row in db is a time consuming task hence we do it in a background thread so our ui don't lag
-        new UpdateItemInDBTask().execute(this.item);
+        updateItemInDb(this.item);
     }
 
     private void deleteFromDB() {
@@ -216,11 +219,10 @@ public class ItemActivity extends AppCompatActivity {
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Continue with delete operation
-                        new DeleteItemFromDBTask().execute(item);
-                    }
+                .setPositiveButton("YES", (dialog, which) -> {
+                    dialogHelper.showDialog();
+                    // Continue with delete operation
+                    deleteFromDb(item);
                 })
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
@@ -279,23 +281,17 @@ public class ItemActivity extends AppCompatActivity {
     public void showDateTimePicker() {
         final Calendar currentDate = Calendar.getInstance();
         Calendar date = Calendar.getInstance();
-        new DatePickerDialog(ItemActivity.this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                date.set(year, monthOfYear, dayOfMonth);
-                new TimePickerDialog(ItemActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        date.set(Calendar.MINUTE, minute);
-                        initializeDateAndTime(date);
-                    }
-                }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show();
-            }
+        new DatePickerDialog(ItemActivity.this, (view, year, monthOfYear, dayOfMonth) -> {
+            date.set(year, monthOfYear, dayOfMonth);
+            new TimePickerDialog(ItemActivity.this, (view1, hourOfDay, minute) -> {
+                date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                date.set(Calendar.MINUTE, minute);
+                initializeDateAndTime(date);
+            }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show();
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
     }
 
-    class CategoryAdapter extends ArrayAdapter<CategoryIcon> {
+    static class CategoryAdapter extends ArrayAdapter<CategoryIcon> {
 
         Context context;
         List<CategoryIcon> list;
@@ -323,17 +319,11 @@ public class ItemActivity extends AppCompatActivity {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.item_category_icon, parent, false);
 
-            TextView textView = (TextView) view.findViewById(R.id.textView);
+            TextView textView = view.findViewById(R.id.textView);
             ImageView imageView = view.findViewById(R.id.imageView);
 
             textView.setText(list.get(position).getCategory());
             imageView.setImageResource(list.get(position).getIcon());
-
-            //Set the divider color to transparent for first item in list
-            if(position == 0){
-                View view1 = view.findViewById(R.id.view);
-                view1.setBackgroundColor(Color.TRANSPARENT);
-            }
 
             return view;
         }
@@ -354,7 +344,7 @@ public class ItemActivity extends AppCompatActivity {
         return list;
     }
 
-    class CategoryIcon {
+    static class CategoryIcon {
         private final String category;
         private final int icon;
 
@@ -372,39 +362,33 @@ public class ItemActivity extends AppCompatActivity {
         }
     }
 
-    class LoadImageTask extends AsyncTask<Uri, Void, Bitmap> {
-
-        @Override
-        protected Bitmap doInBackground(Uri... uris) {
+    private void loadImageInBackground(Uri uri){
+        executorService.execute(() -> {
 
             try {
-                InputStream inputStream = getContentResolver().openInputStream(uris[0]);
-                bitmap = BitmapFactory.decodeStream(inputStream);
+                InputStream inputStream = getContentResolver().openInputStream(uri); //100ms
+                bitmap = BitmapFactory.decodeStream(inputStream); // 200ms
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                return null;
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-
-            if (bitmap == null) {
-                Toast.makeText(ItemActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
-                return;
+                bitmap = null;
             }
 
-            imageView.setImageBitmap(bitmap);
-        }
+            mainThreadHandler.post(() -> {
+                if (bitmap == null) {
+                    Toast.makeText(ItemActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                imageView.setImageBitmap(bitmap);
+            });
+        });
     }
 
-    class AddItemToDBTask extends AsyncTask<Item, Void, Long> {
+    private void addItemToDb(Item item){
 
-        @Override
-        protected Long doInBackground(Item @NotNull ... items) {
-            Item item = items[0];
+        executorService.execute(() -> {
+            //First we store the image in local storage get its path then seth this path in item object and at
+            //we insert the item in db;
 
             //add image to db only if image is selected
             if (bitmap != null) {
@@ -417,51 +401,35 @@ public class ItemActivity extends AppCompatActivity {
                 }
             }
 
-            return itemViewModel.insert(item);
-        }
+            itemViewModel.insert(item);
 
-        @Override
-        protected void onPostExecute(Long integer) {
-            super.onPostExecute(integer);
-            dialogHelper.dismissDialog();
-
-            if (integer == -1) {
-                Toast.makeText(ItemActivity.this, "Operation Failed", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-            onBackPressed();
-
-        }
+            mainThreadHandler.post(() -> {
+                dialogHelper.dismissDialog();
+                Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            });
+        });
     }
 
-    class LoadImageTask2 extends AsyncTask<Item, Void, Bitmap> {
+    private void loadImageOfSelectedItem(Item item){
 
-        @Override
-        protected Bitmap doInBackground(Item... items) {
-            String imagePath = items[0].getImagePath();
-            String imageName = items[0].getImageName();
-            return helper.getImageFromStorage(imagePath, imageName);
-        }
+        executorService.execute(() -> {
 
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            try {
-                imageView.setImageBitmap(bitmap);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+            String imagePath = item.getImagePath();
+            String imageName = item.getImageName();
+            bitmap = helper.getImageFromStorage(imagePath, imageName);
+
+            mainThreadHandler.post(() -> {
+                if(bitmap != null){
+                    imageView.setImageBitmap(bitmap);
+                }
+            });
+        });
     }
 
-    class UpdateItemInDBTask extends AsyncTask<Item, Void, Integer> {
+    private void updateItemInDb(Item item){
+        executorService.execute(() -> {
 
-        @Override
-        protected Integer doInBackground(Item @NotNull ... items) {
-            Item item = items[0];
-
-            //add image to db only if image is selected
             if (bitmap != null) {
 
                 //If there was an image already associated with this entry we will delete it
@@ -478,55 +446,30 @@ public class ItemActivity extends AppCompatActivity {
                 }
             }
 
-            return itemViewModel.update(item);
-        }
+            itemViewModel.update(item);
 
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            dialogHelper.dismissDialog();
-
-            if (integer == -1) {
-                Toast.makeText(ItemActivity.this, "Operation Failed", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
-            editMode(false);
-        }
+            mainThreadHandler.post(() -> {
+                dialogHelper.dismissDialog();
+                Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                editMode(false);
+            });
+        });
     }
 
-    class DeleteItemFromDBTask extends AsyncTask<Item, Void, Integer> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialogHelper.showDialog();
-        }
-
-        @Override
-        protected Integer doInBackground(Item @NotNull ... items) {
-            Item item = items[0];
+    private void deleteFromDb(Item item){
+        executorService.execute(() -> {
 
             //If there is an image associated with this entry we will delete it
             if(item.getImageName()!= null){
                 helper.deleteImageFromStorage(item.getImagePath(), item.getImageName());
             }
-
-            return itemViewModel.delete(item);
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            dialogHelper.dismissDialog();
-
-            if (integer == -1) {
-                Toast.makeText(ItemActivity.this, "Operation Failed", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
-            onBackPressed();
-        }
+            itemViewModel.delete(item);
+            mainThreadHandler.post(() -> {
+                dialogHelper.dismissDialog();
+                Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            });
+        });
     }
 
     @Override
@@ -542,7 +485,7 @@ public class ItemActivity extends AppCompatActivity {
 
             /*Since getting image from gallery then converting it into bitmap is a time consuming task therefore
             we do it in a background thread*/
-            new LoadImageTask().execute(data.getData());
+            loadImageInBackground(data.getData());
 
         } else {
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
