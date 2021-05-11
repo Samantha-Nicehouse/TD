@@ -15,7 +15,7 @@ import com.example.treasuredetector.model.User;
 
 import java.util.concurrent.Executors;
 
-@Database(entities = {Item.class, User.class}, version = 12)
+@Database(entities = {Item.class, User.class}, version = 13)
 public abstract class TreasureDetectorDatabase extends RoomDatabase {
     //creates a singleton of the item database - used everywhere in app
     private static TreasureDetectorDatabase instance;

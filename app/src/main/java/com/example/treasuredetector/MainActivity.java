@@ -4,18 +4,13 @@ package com.example.treasuredetector;
  pre-defined functions which are triggered
 at different App states, which we can override to perform anything we want.*/
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.Toast;
 
-import com.example.treasuredetector.R;
-
-import com.example.treasuredetector.model.User;
-import com.example.treasuredetector.view_model.UserViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -46,5 +41,32 @@ public class MainActivity extends AppCompatActivity {
     {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
+    }
+
+
+    boolean isBackDoublePressed = false;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isBackDoublePressed = false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isBackDoublePressed = true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(isBackDoublePressed){
+            super.onDestroy();
+            return;
+        }
+
+        isBackDoublePressed = true;
+        Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+
     }
 }

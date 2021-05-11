@@ -14,13 +14,13 @@ import java.util.List;
 @Dao
 public interface ItemDao {
     @Insert
-    void insert(Item item);
+    long insert(Item item);
 
     @Update
-    void update(Item item);
+    int update(Item item);
 
     @Delete
-    void delete(Item item);
+    int delete(Item item);
 
     @Query("DELETE FROM item_table")
     void deleteAllItems();

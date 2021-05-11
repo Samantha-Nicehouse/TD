@@ -1,11 +1,11 @@
 package com.example.treasuredetector.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,14 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.treasuredetector.ItemActivity;
 import com.example.treasuredetector.R;
 
 import com.example.treasuredetector.adapter.ItemAdapter;
 import com.example.treasuredetector.model.Item;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,7 +33,6 @@ public class ItemFragment extends Fragment {
     RecyclerView recyclerView;
     ItemAdapter adapter;
     FloatingActionButton fab;
-
 
     /**
      * }
@@ -46,6 +47,17 @@ public class ItemFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+
+
+        fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ItemActivity.class);
+                intent.putExtra("flow","addItem");
+                startActivity(intent);
+            }
+        });
         //pass the fragment so that viewmodel knows which lifecycle to scope to
         //android activity will destroy the fragment when "this" is finished
 
@@ -56,22 +68,10 @@ public class ItemFragment extends Fragment {
                 adapter.setItems(items);
             }
         });
-    /*    //only returns if activity is running in the foreground
-        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
-            @Override
-            public void onChanged(List<Item> items) {
-                adapter.setList(items);
-                //update recyclerView
-                Toast.makeText(getContext().getApplicationContext(), "onChanged", Toast.LENGTH_SHORT).show();
-            }
-        });*/
-        //adapter.setItemClickListener((v,);
+
         recyclerView = view.findViewById(R.id.list);
-        buildItemListData();
         BuildRecyclerView();
-
         return view;
-
     }
 
 
@@ -81,46 +81,35 @@ public class ItemFragment extends Fragment {
         adapter = new ItemAdapter(new ItemAdapter.ItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("itemObject", new Gson().toJson(item));
-                // Navigation.findNavController(view).navigate(R.id.detailFragment,bundle);
+                Intent intent = new Intent(getContext(), ItemActivity.class);
+                intent.putExtra("flow","viewItem");
+                intent.putExtra("data", item);
+                try {
+                    startActivity(intent);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
         //set the adapter
         recyclerView.setAdapter(adapter);
+//        fillDemoData();
     }
 
+    private void fillDemoData() {
 
-    private void buildItemListData() {
-//     itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", ""));
-//    //itemViewModel.insert(new Item(R.drawable.ic_key, "Key", ""));
-//      //itemViewModel.insert(new Item(R.drawable.ic_sword, "Sword", ""));
-//       itemViewModel.insert(new Item(R.drawable.ic_quiver, "Quiver", ""));
-//      itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "May 1, 2020"));
-//       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "April 20, 1986"));
-//       itemViewModel.insert(new Item(R.drawable.ic_bullets, "Bullet", "July 4, 1992"));
+        List<Item> items = new ArrayList<>();
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
 
+        adapter.setItems(items);
     }
 
-   /* @Override
-    public void onItemClick(Item item) {
-        Fragment fragment = ItemViewFragment.newInstance(item.getName());
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, ItemViewFragment.class, null);
-       // transaction.hide(getActivity().getSupportFragmentManager().findFragmentById(R.id.itemViewFragment));
-       // transaction.add(R.id.fragment_container,fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }*/
-/*
-    @Override
-    public void onListItemClick(int position) {
-        Fragment fragment = ItemViewFragment.newInstance(items.get(position).getName());
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, ItemViewFragment.class, null);
-        // transaction.hide(getActivity().getSupportFragmentManager().findFragmentById(R.id.itemViewFragment));
-        // transaction.add(R.id.fragment_container,fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }*/
 }

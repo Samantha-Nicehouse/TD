@@ -9,28 +9,26 @@
         android:id="@+id/navBar_lists"
         android:name="com.example.treasuredetector.view.ItemFragment"
         android:label="fragment_item_list"
-        tools:layout="@layout/fragment_item_list" >
-    </fragment>
+        tools:layout="@layout/fragment_item_list"></fragment>
 
     <fragment
         android:id="@+id/navBar_map"
         android:name="com.example.treasuredetector.view.MapsFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_maps" >
-    </fragment>
+        tools:layout="@layout/fragment_maps"></fragment>
 
-<!--    <fragment-->
-<!--        android:id="@+id/navBar_home"-->
-<!--        android:name="com.example.treasuredetector.view.HomeFragment"-->
-<!--        android:label="fragment_home"-->
-<!--        tools:layout="@layout/fragment_home" >-->
-<!--    </fragment>-->
+    <!--    <fragment-->
+    <!--        android:id="@+id/navBar_home"-->
+    <!--        android:name="com.example.treasuredetector.view.HomeFragment"-->
+    <!--        android:label="fragment_home"-->
+    <!--        tools:layout="@layout/fragment_home" >-->
+    <!--    </fragment>-->
 
 
-<!--    <fragment-->
-<!--        android:id="@+id/detailFragment"-->
-<!--        android:name="com.example.treasuredetector.view.DetailFragment"-->
-<!--        android:label="fragment_detail"-->
-<!--        tools:layout="@layout/fragment_detail" />-->
+    <!--    <fragment-->
+    <!--        android:id="@+id/detailFragment"-->
+    <!--        android:name="com.example.treasuredetector.view.DetailFragment"-->
+    <!--        android:label="fragment_detail"-->
+    <!--        tools:layout="@layout/fragment_detail" />-->
 
 </navigation>

@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.treasuredetector.R;
+import com.example.treasuredetector.helper.Helper;
 import com.example.treasuredetector.model.Item;
+import com.google.rpc.Help;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -25,12 +27,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
     private List<Item> items = new ArrayList<>();
     private ItemClickListener clickListener;
 
+    Helper helper;
+
 
     public ItemAdapter() {
     }
 
     public ItemAdapter(ItemClickListener itemClickListener) {
         this.clickListener = itemClickListener;
+        helper = new Helper();
     }
 
     class ItemHolder extends RecyclerView.ViewHolder {
@@ -42,6 +47,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
         public ItemHolder(View view) {
             super(view);
+
+            imageView = view.findViewById(R.id.imageViewItemImage);
+            textViewTitle = view.findViewById(R.id.textViewItemTitle);
+            textViewDescription = view.findViewById(R.id.textViewItemDescription);
+            textViewDate = view.findViewById(R.id.textViewItemDate);
 
             view.setOnClickListener(v -> {
                 clickListener.onItemClick(items.get(getAbsoluteAdapterPosition()), v);
@@ -63,7 +73,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
     public void onBindViewHolder(final ItemHolder holder, int position) {
         Item currentItem = items.get(position);
 
-
+        holder.imageView.setImageResource(helper.getResourceIdFromName(currentItem.getCategory()));
+        holder.textViewTitle.setText(currentItem.getTitle());
+        holder.textViewDescription.setText(currentItem.getDescription());
+        holder.textViewDate.setText(helper.getFormattedDate(currentItem.getTime()));
     }
 
     public void setItems(List<Item> items) {
@@ -73,6 +86,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
     @Override
     public int getItemCount() {
+        if(items == null)
+            return 0;
         return items.size();
     }
 
@@ -84,7 +99,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
     public interface ItemClickListener {
         void onItemClick(Item item, View view);
     }
-
 
 
 }

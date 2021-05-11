@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,13 +16,15 @@ import android.widget.Toast;
 import com.example.treasuredetector.model.User;
 import com.example.treasuredetector.view_model.UserViewModel;
 
+import org.jetbrains.annotations.Async;
+
 public class LoginActivity extends AppCompatActivity {
 
 
     EditText editTextUsername;
     EditText editTextPassword;
     TextView textViewRegisterNow;
-    Button   buttonLogin;
+    Button buttonLogin;
 
     UserViewModel userViewModel;
     User user;
@@ -59,26 +62,44 @@ public class LoginActivity extends AppCompatActivity {
         String username = editTextUsername.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if(username.isEmpty()){
+        if (username.isEmpty()) {
             Toast.makeText(this, "Please enter username", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(password.isEmpty()){
+        if (password.isEmpty()) {
             Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        user = userViewModel.login(username, password);
+        //Since the sql query take longer time we are doing this operation in background thread
+        new LoginTask().execute(username, password);
 
-        if(user == null){
-            Toast.makeText(this, "Login failed, invalid email or password", Toast.LENGTH_SHORT).show();
-            return;
+    }
+
+    class LoginTask extends AsyncTask<String, Void, User> {
+
+        @Override
+        protected User doInBackground(String... strings) {
+
+            String username = strings[0];
+            String password = strings[1];
+            return userViewModel.login(username, password);
         }
 
-        Toast.makeText(this, "Logged in successfully", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        @Override
+        protected void onPostExecute(User user) {
+            super.onPostExecute(user);
+
+            if (user == null) {
+                Toast.makeText(LoginActivity.this, "Login failed, invalid email or password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

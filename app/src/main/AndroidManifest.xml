@@ -22,7 +22,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TreasureDetector"
         android:usesCleartextTraffic="true">
-        <activity android:name=".LoginActivity"></activity>
+
+
+        <activity android:name=".ItemActivity"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+        <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterUserActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
