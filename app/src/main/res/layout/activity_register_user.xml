@@ -16,21 +16,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/editTextName"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/edit_text_background"
-            android:drawableLeft="@drawable/ic_baseline_face_24"
-            android:drawablePadding="20dp"
-            android:ems="10"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:padding="12dp" />
+            android:gravity="center"
+            android:text="Registration"
+            android:textSize="36sp"
+            android:layout_marginBottom="36dp"
+            android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/editTextUsername"
+            android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -38,7 +34,20 @@
             android:drawableLeft="@drawable/ic_baseline_person_24"
             android:drawablePadding="20dp"
             android:ems="10"
-            android:hint="Username"
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:padding="12dp" />
+
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit_text_background"
+            android:drawableLeft="@drawable/ic_baseline_email_24"
+            android:drawablePadding="20dp"
+            android:ems="10"
+            android:hint="Email"
             android:inputType="textPersonName"
             android:padding="12dp" />
 

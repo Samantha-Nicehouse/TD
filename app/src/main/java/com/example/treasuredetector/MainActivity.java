@@ -18,8 +18,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 destruction and other states of the App's lifecycle.*/
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "TreasureDetectorMainActivity";
-
     NavController navController;
     BottomNavigationView bottomNavigationView;
     @Override
@@ -57,21 +55,15 @@ public class MainActivity extends AppCompatActivity {
         isBackDoublePressed = false;
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        isBackDoublePressed = true;
-    }
 
     @Override
-    protected void onDestroy() {
+    public void onBackPressed() {
         if(isBackDoublePressed){
-            super.onDestroy();
+            super.onBackPressed();
             return;
         }
 
         isBackDoublePressed = true;
         Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
-
     }
 }

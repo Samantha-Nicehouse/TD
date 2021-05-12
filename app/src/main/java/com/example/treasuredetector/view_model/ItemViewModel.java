@@ -2,6 +2,7 @@ package com.example.treasuredetector.view_model;
 
 
 import android.app.Application;
+import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -25,20 +26,25 @@ public class ItemViewModel extends AndroidViewModel {
     public ItemViewModel(@NonNull Application application) {
         super(application);
 
-        repository = new ItemRepository(application);
+        this.repository = new ItemRepository(application);
         allItems = repository.getAllItems();
+
+    }
+
+    public void setCallback(ItemRepository.Callback callback) {
+        this.repository.setCallback(callback);
     }
 
     //activity only has references to the viewmodel not to the repository
     //so we create these wrapper methods
-    public void insert(Item item)
+    public void insert(Item item, Bitmap bitmap)
     {
-        repository.insert(item);
+        repository.insert(item, bitmap);
     }
 
-    public void update(Item item)
+    public void update(Item item, Bitmap bitmap)
     {
-        repository.update(item);
+        repository.update(item, bitmap);
     }
 
     public void delete(Item item)

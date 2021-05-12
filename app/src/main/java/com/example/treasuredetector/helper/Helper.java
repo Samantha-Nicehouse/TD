@@ -34,6 +34,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -64,6 +66,13 @@ public class Helper {
         hashMap.put("Miscellaneous", R.drawable.ic_miscellaneous);
         hashMap.put("Quiver", R.drawable.ic_quiver);
         hashMap.put("Sword", R.drawable.ic_sword);
+    }
+
+
+    public boolean isEmailValid(String emailStr) {
+        Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
+        return matcher.find();
     }
 
     public int getResourceIdFromName(String name) {
@@ -231,10 +240,10 @@ public class Helper {
         return directory.getAbsolutePath();
     }
 
-    public Bitmap getImageFromStorage(String path,String fileName) {
+    public Bitmap getImageFromStorage(String path, String fileName) {
 
         try {
-            File file = new File(path, fileName+".jpg");
+            File file = new File(path, fileName + ".jpg");
             return BitmapFactory.decodeStream(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -242,12 +251,11 @@ public class Helper {
         }
     }
 
-    public boolean deleteImageFromStorage(String path, String fileName){
+    public boolean deleteImageFromStorage(String path, String fileName) {
         try {
-            File file = new File(path, fileName+".jpg");
+            File file = new File(path, fileName + ".jpg");
             return file.delete();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

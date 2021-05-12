@@ -22,14 +22,30 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TreasureDetector"
         android:usesCleartextTraffic="true">
-
-
-        <activity android:name=".ItemActivity"
+        <activity
+            android:name=".SplashActivity"
             android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterUserActivity" />
+
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".LoginActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ItemActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:label="Item"/>
+        <activity
+            android:name=".RegisterUserActivity"
+            android:windowSoftInputMode="stateHidden" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -45,13 +61,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

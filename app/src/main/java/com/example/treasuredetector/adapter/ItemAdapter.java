@@ -12,11 +12,8 @@ import android.widget.TextView;
 import com.example.treasuredetector.R;
 import com.example.treasuredetector.helper.Helper;
 import com.example.treasuredetector.model.Item;
-import com.google.rpc.Help;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -25,13 +22,9 @@ import java.util.List;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
     private List<Item> items = new ArrayList<>();
-    private ItemClickListener clickListener;
+    private final ItemClickListener clickListener;
 
     Helper helper;
-
-
-    public ItemAdapter() {
-    }
 
     public ItemAdapter(ItemClickListener itemClickListener) {
         this.clickListener = itemClickListener;
@@ -53,9 +46,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
             textViewDescription = view.findViewById(R.id.textViewItemDescription);
             textViewDate = view.findViewById(R.id.textViewItemDate);
 
-            view.setOnClickListener(v -> {
-                clickListener.onItemClick(items.get(getAbsoluteAdapterPosition()), v);
-            });
+            view.setOnClickListener(v -> clickListener.onItemClick(items.get(getAbsoluteAdapterPosition()), v));
         }
     }
 

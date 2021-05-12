@@ -10,7 +10,7 @@ import com.example.treasuredetector.R;
 
 public class DialogHelper {
 
-    private Dialog dialog;
+    private final Dialog dialog;
 
     public DialogHelper(Context context) {
         dialog = new Dialog(context);
@@ -36,9 +36,5 @@ public class DialogHelper {
         catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    public void cancelDialog(){
-        dialog.cancel();
     }
 }

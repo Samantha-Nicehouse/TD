@@ -16,16 +16,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Login"
+            android:textSize="36sp"
+            android:layout_marginBottom="36dp"
+            android:textStyle="bold" />
+
         <EditText
-            android:id="@+id/editTextUsername"
+            android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/edit_text_background"
-            android:drawableLeft="@drawable/ic_baseline_person_24"
+            android:drawableStart="@drawable/ic_baseline_email_24"
             android:drawablePadding="20dp"
             android:ems="10"
-            android:hint="Username"
+            android:hint="Email"
             android:inputType="textPersonName"
             android:padding="12dp" />
 

@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.example.treasuredetector.helper.DialogHelper;
 import com.example.treasuredetector.helper.Helper;
 import com.example.treasuredetector.model.Item;
+import com.example.treasuredetector.repository.ItemRepository;
 import com.example.treasuredetector.view_model.ItemViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +60,7 @@ public class ItemActivity extends AppCompatActivity {
     TextView textViewLocation;
     ImageView imageView;
     ImageView imageViewEdit;
-    Button button;
+    Button buttonAdd;
 
     Helper helper;
     DialogHelper dialogHelper;
@@ -81,21 +82,43 @@ public class ItemActivity extends AppCompatActivity {
     MenuItem menuItemSave;
     MenuItem menuItemDelete;
 
-    ExecutorService executorService = Executors.newFixedThreadPool(4);
+    ExecutorService executorService = Executors.newFixedThreadPool(2);
     Handler mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper());
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
 
-
         initViews();
 
         helper = new Helper(ItemActivity.this);
         dialogHelper = new DialogHelper(ItemActivity.this);
         itemViewModel = new ViewModelProvider(this).get(ItemViewModel.class);
+
+        itemViewModel.setCallback(new ItemRepository.Callback() {
+            @Override
+            public void onItemAdded() {
+                dialogHelper.dismissDialog();
+                Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+
+            @Override
+            public void onItemUpdated() {
+                dialogHelper.dismissDialog();
+                Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                editMode(false);
+//                onBackPressed();
+            }
+
+            @Override
+            public void onItemDeleted() {
+                dialogHelper.dismissDialog();
+                Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+        });
 
         categoryIconArrayList = getCategoryIconList();
 
@@ -110,6 +133,7 @@ public class ItemActivity extends AppCompatActivity {
             initializeDateAndTime(Calendar.getInstance());
             initializeLocation();
         } else if (flow.equals("viewItem")) {
+            buttonAdd.setVisibility(View.GONE);
 
             editMode(false);
 
@@ -148,7 +172,7 @@ public class ItemActivity extends AppCompatActivity {
 
         imageView.setOnClickListener(v -> selectImage());
 
-        button.setOnClickListener(v -> addToDB());
+        buttonAdd.setOnClickListener(v -> addToDB());
     }
 
     private void addToDB() {
@@ -172,10 +196,11 @@ public class ItemActivity extends AppCompatActivity {
         }
 
         Item item = new Item(title, description, category, time, latitude, longitude);
-        dialogHelper.showDialog();
 
-        //Inserting a new row in db is also time consuming hence we do it in a background thread so our ui don't lag
-        addItemToDb(item);
+
+        dialogHelper.showDialog();
+        itemViewModel.insert(item, bitmap);
+
     }
 
     private void updateInDB() {
@@ -207,27 +232,20 @@ public class ItemActivity extends AppCompatActivity {
         this.item.setLongitude(longitude);
 
         dialogHelper.showDialog();
-
-        //Updating a row in db is a time consuming task hence we do it in a background thread so our ui don't lag
-        updateItemInDb(this.item);
+        itemViewModel.update(item, bitmap);
     }
 
     private void deleteFromDB() {
         new AlertDialog.Builder(this)
                 .setTitle("Delete entry")
                 .setMessage("Are you sure you want to delete this entry?")
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton("YES", (dialog, which) -> {
                     dialogHelper.showDialog();
-                    // Continue with delete operation
-                    deleteFromDb(item);
+                    itemViewModel.delete(item);
                 })
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton("NO", null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
@@ -275,7 +293,7 @@ public class ItemActivity extends AppCompatActivity {
         textViewLocation = findViewById(R.id.textViewLocation);
         imageView = findViewById(R.id.imageView);
         imageViewEdit = findViewById(R.id.imageViewEdit);
-        button = findViewById(R.id.button);
+        buttonAdd = findViewById(R.id.button);
     }
 
     public void showDateTimePicker() {
@@ -384,90 +402,19 @@ public class ItemActivity extends AppCompatActivity {
         });
     }
 
-    private void addItemToDb(Item item){
-
-        executorService.execute(() -> {
-            //First we store the image in local storage get its path then seth this path in item object and at
-            //we insert the item in db;
-
-            //add image to db only if image is selected
-            if (bitmap != null) {
-                String imageName = item.getTitle() + "_" + item.getTime();
-                String imagePath = helper.saveToInternalStorage(bitmap, imageName);
-
-                if (imagePath != null && !imagePath.isEmpty()) {
-                    item.setImagePath(imagePath);
-                    item.setImageName(imageName);
-                }
-            }
-
-            itemViewModel.insert(item);
-
-            mainThreadHandler.post(() -> {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-                onBackPressed();
-            });
-        });
-    }
-
     private void loadImageOfSelectedItem(Item item){
 
         executorService.execute(() -> {
 
+
             String imagePath = item.getImagePath();
             String imageName = item.getImageName();
-            bitmap = helper.getImageFromStorage(imagePath, imageName);
+            Bitmap bitmap = helper.getImageFromStorage(imagePath, imageName);
 
             mainThreadHandler.post(() -> {
                 if(bitmap != null){
                     imageView.setImageBitmap(bitmap);
                 }
-            });
-        });
-    }
-
-    private void updateItemInDb(Item item){
-        executorService.execute(() -> {
-
-            if (bitmap != null) {
-
-                //If there was an image already associated with this entry we will delete it
-                if(item.getImageName()!= null){
-                    helper.deleteImageFromStorage(item.getImagePath(), item.getImageName());
-                }
-
-                String imageName = item.getTitle() + "_" + item.getTime();
-                String imagePath = helper.saveToInternalStorage(bitmap, imageName);
-
-                if (imagePath != null && !imagePath.isEmpty()) {
-                    item.setImagePath(imagePath);
-                    item.setImageName(imageName);
-                }
-            }
-
-            itemViewModel.update(item);
-
-            mainThreadHandler.post(() -> {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
-                editMode(false);
-            });
-        });
-    }
-
-    private void deleteFromDb(Item item){
-        executorService.execute(() -> {
-
-            //If there is an image associated with this entry we will delete it
-            if(item.getImageName()!= null){
-                helper.deleteImageFromStorage(item.getImagePath(), item.getImageName());
-            }
-            itemViewModel.delete(item);
-            mainThreadHandler.post(() -> {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
-                onBackPressed();
             });
         });
     }
@@ -542,7 +489,6 @@ public class ItemActivity extends AppCompatActivity {
         textViewLocation.setEnabled(isEditable);
         imageView.setEnabled(isEditable);
         imageViewEdit.setEnabled(isEditable);
-        button.setVisibility(View.GONE);
 
         int colorId = R.color.edit_text_background_color;
 

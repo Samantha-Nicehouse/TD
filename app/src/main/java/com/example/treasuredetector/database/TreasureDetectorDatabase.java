@@ -9,18 +9,15 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.treasuredetector.dao.ItemDao;
-import com.example.treasuredetector.dao.UserDao;
 import com.example.treasuredetector.model.Item;
-import com.example.treasuredetector.model.User;
 
 import java.util.concurrent.Executors;
 
-@Database(entities = {Item.class, User.class}, version = 13)
+@Database(entities = {Item.class}, version = 14)
 public abstract class TreasureDetectorDatabase extends RoomDatabase {
     //creates a singleton of the item database - used everywhere in app
     private static TreasureDetectorDatabase instance;
     public abstract ItemDao itemDao();
-    public abstract UserDao userDao();
 
 
     //create database singleton
@@ -35,15 +32,6 @@ public abstract class TreasureDetectorDatabase extends RoomDatabase {
                         @Override //callback the room database to create it one time only async task replated by executro
                         public void onCreate(@NonNull SupportSQLiteDatabase db) {
                             super.onCreate(db);
-                            Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
-                                @Override
-                                public void run() {
-//                                   getInstance(context).itemDao().insert(new Item(R.drawable.ic_jewelry, "Jewelry", "May 19, 2018" ));
-                                  // getInstance(context).geopointDao().insert(new Geopoint( 56.1512448,0.2137856));
-                                // getInstance(context).geopointDao().insert( new Geopoint(56.1512448,0.2137856));
-                                //  getInstance(context).geopointDao().insert(new Geopoint(56.1512400,0.21378500));
-                                }
-                            });
                         }
                     }).build();
         }
