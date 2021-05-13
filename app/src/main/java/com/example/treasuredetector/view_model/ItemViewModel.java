@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.treasuredetector.repository.ItemRepository;
 import com.example.treasuredetector.model.Item;
@@ -20,7 +19,7 @@ public class ItemViewModel extends AndroidViewModel {
 
     //variables
     ItemRepository repository;
-    private LiveData<List<Item>> allItems;
+    private final LiveData<List<Item>> allItems;
 
     //constructor
     public ItemViewModel(@NonNull Application application) {
@@ -28,11 +27,14 @@ public class ItemViewModel extends AndroidViewModel {
 
         this.repository = new ItemRepository(application);
         allItems = repository.getAllItems();
-
     }
 
     public void setCallback(ItemRepository.Callback callback) {
         this.repository.setCallback(callback);
+    }
+
+    public void setCallbackMap(ItemRepository.CallbackMap callbackMap){
+        this.repository.setCallbackMap(callbackMap);
     }
 
     //activity only has references to the viewmodel not to the repository
@@ -52,19 +54,8 @@ public class ItemViewModel extends AndroidViewModel {
         repository.delete(item);
     }
 
-    public void deleteAll()
-    {
-        repository.deleteAllItems();
-    }
-
-    private MutableLiveData<Item> selected = new MutableLiveData<>();
-
-    public void setSelected(Item item) {
-        selected.setValue(item);
-    }
-
-    public MutableLiveData<Item> getSelected() {
-        return selected;
+    public void getLastFiveEntries(){
+        repository.getLastFiveEntries();
     }
 
     public LiveData<List<Item>> getAllItems() {

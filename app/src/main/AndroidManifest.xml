@@ -40,8 +40,8 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ItemActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:label="Item"/>
+            android:label="Item"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".RegisterUserActivity"
             android:windowSoftInputMode="stateHidden" />

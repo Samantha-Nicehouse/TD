@@ -50,13 +50,10 @@ public class ItemFragment extends Fragment {
 
 
         fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), ItemActivity.class);
-                intent.putExtra("flow","addItem");
-                startActivity(intent);
-            }
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ItemActivity.class);
+            intent.putExtra("flow","addItem");
+            startActivity(intent);
         });
         //pass the fragment so that viewmodel knows which lifecycle to scope to
         //android activity will destroy the fragment when "this" is finished
@@ -78,17 +75,14 @@ public class ItemFragment extends Fragment {
     private void BuildRecyclerView() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ItemAdapter(new ItemAdapter.ItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                Intent intent = new Intent(getContext(), ItemActivity.class);
-                intent.putExtra("flow","viewItem");
-                intent.putExtra("data", item);
-                try {
-                    startActivity(intent);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+        adapter = new ItemAdapter((item, view) -> {
+            Intent intent = new Intent(getContext(), ItemActivity.class);
+            intent.putExtra("flow","viewItem");
+            intent.putExtra("data", item);
+            try {
+                startActivity(intent);
+            }catch (Exception e){
+                e.printStackTrace();
             }
         });
         //set the adapter

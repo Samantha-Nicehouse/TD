@@ -8,6 +8,8 @@ import android.view.Window;
 
 import com.example.treasuredetector.R;
 
+// This class is used for creating, showing and dismissing the progress bar
+
 public class DialogHelper {
 
     private final Dialog dialog;

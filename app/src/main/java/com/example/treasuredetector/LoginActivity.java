@@ -79,8 +79,8 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        if(!helper.isEmailValid(email)){
-            Toast.makeText(this, "Please a valid email", Toast.LENGTH_SHORT).show();
+        if(helper.isEmailInvalid(email)){
+            Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
             return;
         }
 

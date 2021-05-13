@@ -125,7 +125,6 @@ public class ItemActivity extends AppCompatActivity {
         CategoryAdapter adapter = new CategoryAdapter(this, R.layout.item_category_icon, categoryIconArrayList);
         spinnerCategory.setAdapter(adapter);
 
-
         intent = getIntent();
         flow = intent.getStringExtra("flow");
 
@@ -222,7 +221,6 @@ public class ItemActivity extends AppCompatActivity {
             Toast.makeText(ItemActivity.this, "Please select some category", Toast.LENGTH_SHORT).show();
             return;
         }
-
 
         this.item.setTitle(title);
         this.item.setDescription(description);

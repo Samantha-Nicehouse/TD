@@ -26,7 +26,13 @@ public interface ItemDao {
     @Query("DELETE FROM item_table")
     void deleteAllItems();
 
+    //This method returns max last five items from db
+    @Query("select * from item_table order by id desc limit 5")
+    List<Item> getLastFiveEntries();
+
     //live data creates an observable so we know when a new item is created
     @Query("SELECT * FROM item_table")
     LiveData<List<Item>> getAllItems();
+
+
 }

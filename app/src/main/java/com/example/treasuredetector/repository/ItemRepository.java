@@ -17,23 +17,22 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import javax.xml.transform.Result;
-
 public class ItemRepository {
 
-    private ItemDao itemDao;
-    private LiveData<List<Item>> allItems;
-    private Executor executorService;
-    private Handler mainThreadHandler;
+    private final ItemDao itemDao;
+    private final LiveData<List<Item>> allItems;
+    private final Executor executorService;
+    private final Handler mainThreadHandler;
     private Callback callback;
-    private Helper helper;
+    private CallbackMap callbackMap;
+    private final Helper helper;
 
     public ItemRepository(Application application)
     {
         TreasureDetectorDatabase database = TreasureDetectorDatabase.getInstance(application);
         itemDao = database.itemDao(); //assign database
         allItems = itemDao.getAllItems();
-        executorService = Executors.newFixedThreadPool(4);
+        executorService = Executors.newFixedThreadPool(5);
         mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper());
         helper = new Helper(application);
 
@@ -43,17 +42,20 @@ public class ItemRepository {
         this.callback = callback;
     }
 
+    public void setCallbackMap(CallbackMap callbackMap){
+        this.callbackMap = callbackMap;
+    }
+
     // I think we are all clear, we can end the meeting now, bye
     //the following methods are the API that passes items to the repository abstractions layer
     //executes a thread to insert the item
     public void insert(Item item, Bitmap bitmap)
     {
-//        executorService.execute(() ->itemDao.insert(item));
         executorService.execute(() -> {
 
             if (bitmap != null) {
                 String imageName = item.getTitle() + "_" + item.getTime();
-                String imagePath = helper.saveToInternalStorage(bitmap, imageName);
+                String imagePath = helper.saveImageToStorage(bitmap, imageName);
 
                 if (imagePath != null && !imagePath.isEmpty()) {
                     item.setImagePath(imagePath);
@@ -63,9 +65,7 @@ public class ItemRepository {
 
             itemDao.insert(item);
 
-            mainThreadHandler.post(() -> {
-                callback.onItemAdded();
-            });
+            mainThreadHandler.post(() -> callback.onItemAdded());
         });
     }
     public void update(Item item, Bitmap bitmap)
@@ -79,7 +79,7 @@ public class ItemRepository {
                 }
 
                 String imageName = item.getTitle() + "_" + item.getTime();
-                String imagePath = helper.saveToInternalStorage(bitmap, imageName);
+                String imagePath = helper.saveImageToStorage(bitmap, imageName);
 
                 if (imagePath != null && !imagePath.isEmpty()) {
                     item.setImagePath(imagePath);
@@ -89,9 +89,7 @@ public class ItemRepository {
 
             itemDao.update(item);
 
-            mainThreadHandler.post(() -> {
-                callback.onItemUpdated();
-            });
+            mainThreadHandler.post(() -> callback.onItemUpdated());
         });
 
     }
@@ -104,20 +102,25 @@ public class ItemRepository {
             }
             itemDao.delete(item);
 
-            mainThreadHandler.post(() -> {
-                callback.onItemDeleted();
-            });
+            mainThreadHandler.post(() -> callback.onItemDeleted());
         });
 
+    }
+    public void getLastFiveEntries()
+    {
+        executorService.execute(() -> {
+
+            List<Item> list = itemDao.getLastFiveEntries();
+
+            mainThreadHandler.post(() -> callbackMap.onItemsFetched(list));
+        });
     }
     public LiveData<List<Item>> getAllItems() {
         return allItems;
     }
 
-    public void deleteAllItems()
-    {
-        executorService.execute(() -> itemDao.deleteAllItems());
-
+    public interface CallbackMap{
+        void onItemsFetched(List<Item> list);
     }
 
     public interface Callback{

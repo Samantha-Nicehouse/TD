@@ -18,7 +18,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -42,7 +41,7 @@ import static android.content.Context.LOCATION_SERVICE;
 public class Helper {
 
 
-    private HashMap<String, Integer> hashMap;
+    private final HashMap<String, Integer> hashMap;
     Context context;
 
     public Helper(Context context) {
@@ -68,11 +67,10 @@ public class Helper {
         hashMap.put("Sword", R.drawable.ic_sword);
     }
 
-
-    public boolean isEmailValid(String emailStr) {
+    public boolean isEmailInvalid(String emailStr) {
         Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
-        return matcher.find();
+        return !matcher.find();
     }
 
     public int getResourceIdFromName(String name) {
@@ -95,63 +93,6 @@ public class Helper {
         formattedDate.append(calendar.get(Calendar.MINUTE) < 10 ? "0" + calendar.get(Calendar.MINUTE) : calendar.get(Calendar.MINUTE));
 
         return formattedDate.toString();
-    }
-
-    public String getLatitude() {
-        try {
-            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-            if (locationManager != null) {
-                @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (location != null) {
-                    return String.valueOf(location.getLatitude());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "0";
-        }
-        return "0";
-    }
-
-    public String getLongitude() {
-        try {
-            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-            if (locationManager != null) {
-                @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (location != null) {
-                    return String.valueOf(location.getLongitude());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "0";
-        }
-        return "0";
-    }
-
-    public boolean isConnected() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    public boolean isLocationPermissionGrantedCheck() {
-        String TAG = "Information Activity";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG, "Permission is granted");
-                Location location = getLastKnownLocation(context);
-                return location != null;
-            } else {
-                Log.v(TAG, "Permission is revoked");
-                return false;
-            }
-        } else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG, "Permission is granted");
-            return true;
-        }
     }
 
     public boolean isLocationPermissionGranted() {
@@ -216,7 +157,39 @@ public class Helper {
         return bestLocation;
     }
 
-    public String saveToInternalStorage(Bitmap bitmapImage, String fileName) {
+    public String getLatitude() {
+        try {
+            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+            if (locationManager != null) {
+                @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (location != null) {
+                    return String.valueOf(location.getLatitude());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+        return "0";
+    }
+
+    public String getLongitude() {
+        try {
+            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+            if (locationManager != null) {
+                @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (location != null) {
+                    return String.valueOf(location.getLongitude());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+        return "0";
+    }
+
+    public String saveImageToStorage(Bitmap bitmapImage, String fileName) {
         ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = contextWrapper.getDir("TreasureDetector", Context.MODE_PRIVATE);

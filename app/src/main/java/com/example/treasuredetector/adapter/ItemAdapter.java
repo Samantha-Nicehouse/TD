@@ -17,13 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * This is ItemAdapter it is used for populating recycler view in ItemActivity
  */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
     private List<Item> items = new ArrayList<>();
     private final ItemClickListener clickListener;
-
     Helper helper;
 
     public ItemAdapter(ItemClickListener itemClickListener) {
@@ -72,12 +71,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
     public void setItems(List<Item> items) {
         this.items = items;
-        notifyDataSetChanged();//changes to detail view
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        if(items == null)
+        if (items == null)
             return 0;
         return items.size();
     }
