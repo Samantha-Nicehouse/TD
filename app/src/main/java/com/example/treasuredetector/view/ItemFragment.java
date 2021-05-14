@@ -64,6 +64,7 @@ public class ItemFragment extends Fragment {
             public void onChanged(List<Item> items) {
 
                 adapter.setItems(items);
+                adapter.notifyDataSetChanged();
 
             }
         });
@@ -89,7 +90,7 @@ public class ItemFragment extends Fragment {
         });
         //set the adapter
         recyclerView.setAdapter(adapter);
-            fillDemoData();
+
     }
 
     private void fillDemoData() {
@@ -103,6 +104,7 @@ public class ItemFragment extends Fragment {
 
 
         adapter.setItems(items);
+        adapter.notifyDataSetChanged();
 
     }
 

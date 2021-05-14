@@ -165,9 +165,19 @@ public class ItemActivity extends AppCompatActivity {
             }
         }
 
-        textViewDateAndTime.setOnClickListener(v -> showDateTimePicker());
+        textViewDateAndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ItemActivity.this.showDateTimePicker();
+            }
+        });
 
-        textViewLocation.setOnClickListener(v -> initializeLocation());
+        textViewLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ItemActivity.this.initializeLocation();
+            }
+        });
 
         imageView.setOnClickListener(v -> selectImage());
 
