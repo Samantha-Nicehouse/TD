@@ -62,7 +62,9 @@ public class ItemFragment extends Fragment {
         itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
             @Override
             public void onChanged(List<Item> items) {
+
                 adapter.setItems(items);
+
             }
         });
 
@@ -87,23 +89,21 @@ public class ItemFragment extends Fragment {
         });
         //set the adapter
         recyclerView.setAdapter(adapter);
-//        fillDemoData();
+            fillDemoData();
     }
 
     private void fillDemoData() {
 
         List<Item> items = new ArrayList<>();
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 27.9, 64.3));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.15932, 10.222598));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.166591, 10.215675));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.131467, 10.205546));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.130557, 10.207623));
+        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.129068, 10.194942));
+
 
         adapter.setItems(items);
+
     }
 
 }

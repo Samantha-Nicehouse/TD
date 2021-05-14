@@ -18,11 +18,17 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.example.treasuredetector.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,10 +43,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.widget.Toast.LENGTH_LONG;
 
 public class Helper {
 
-
+    private static final String TAG = "LocationActivity";
+    private FusedLocationProviderClient mFusedLocationProviderClient;
     private final HashMap<String, Integer> hashMap;
     Context context;
 
@@ -156,6 +164,9 @@ public class Helper {
         }
         return bestLocation;
     }
+
+
+
 
     public String getLatitude() {
         try {
