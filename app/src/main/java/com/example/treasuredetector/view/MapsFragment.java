@@ -120,7 +120,7 @@ public class MapsFragment extends Fragment {
                 mLocationPermissionGranted = true;
                 SupportMapFragment mapFragment =
                         (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
-
+                mapFragment.onCreate(savedInstanceState);
                 mapFragment.onResume();
                 mapFragment.getMapAsync(callback);
 

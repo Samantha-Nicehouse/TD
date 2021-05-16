@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -45,7 +46,7 @@ import java.util.regex.Pattern;
 import static android.content.Context.LOCATION_SERVICE;
 import static android.widget.Toast.LENGTH_LONG;
 
-public class Helper {
+public class Helper  {
 
     private static final String TAG = "LocationActivity";
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -154,7 +155,7 @@ public class Helper {
         Location bestLocation = null;
         for (String provider : providers) {
             @SuppressLint("MissingPermission") Location l = mLocationManager.getLastKnownLocation(provider);
-            if (l == null) {
+            if (l != null) {
                 continue;
             }
             if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
@@ -244,4 +245,6 @@ public class Helper {
             return false;
         }
     }
+
+
 }

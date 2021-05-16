@@ -15,7 +15,7 @@ import com.example.treasuredetector.view_model.ItemViewModel;
 import java.util.Date;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Item.class}, version = 1)
+@Database(entities = {Item.class}, version = 2)
 public abstract class TreasureDetectorDatabase extends RoomDatabase {
     //creates a singleton of the item database - used everywhere in app
     private static TreasureDetectorDatabase instance;
@@ -37,11 +37,11 @@ public abstract class TreasureDetectorDatabase extends RoomDatabase {
                             Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.15932, 10.222598));
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.166591, 10.215675));
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.131467, 10.205546));
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.130557, 10.207623));
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.129068, 10.194942));
+                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.15932211, 10.22259811));
+                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.16659111, 10.21567511));
+                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.13146711, 10.20554611));
+                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.13055711, 10.20762311));
+                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.12906811, 10.19494211));
 
                                 }
                             });

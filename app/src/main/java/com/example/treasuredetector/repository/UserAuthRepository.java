@@ -55,8 +55,8 @@ public class UserAuthRepository {
                     }
                 })
                 .addOnCanceledListener(() -> {
-                    Log.d(TAG, "onCanceled: ");
-                    callbackLogin.loginFailed("canceled");
+                    Log.d(TAG, "onCancelled: ");
+                    callbackLogin.loginFailed("cancelled");
                 });
     }
 

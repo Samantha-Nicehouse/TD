@@ -97,6 +97,7 @@ public class ItemActivity extends AppCompatActivity {
         itemViewModel = new ViewModelProvider(this).get(ItemViewModel.class);
 
         itemViewModel.setCallback(new ItemRepository.Callback() {
+
             @Override
             public void onItemAdded() {
                 dialogHelper.dismissDialog();
@@ -152,10 +153,10 @@ public class ItemActivity extends AppCompatActivity {
 
             String location =
                     "Lat: " +
-                            (helper.getLatitude().equals("0") ? "0" : helper.getLatitude().substring(0, 10)) +
+                            (String.valueOf(item.getLatitude()).equals("0") ? "0" : (String.valueOf(item.getLatitude()).substring(0, 10)) +
                             "  |  " +
                             "Lng: " +
-                            (helper.getLongitude().equals("0") ? "0" : helper.getLongitude().substring(0, 10));
+                                    (String.valueOf(item.getLongitude()).equals("0") ? "0" : (String.valueOf(item.getLongitude()).substring(0, 10))));
 
             textViewLocation.setText(location);
 
@@ -282,6 +283,7 @@ public class ItemActivity extends AppCompatActivity {
         if (longitude == 0 && latitude == 0) {
             helper.isLocationPermissionGranted();
         }
+
 
         String location =
                 "Lat: " +
