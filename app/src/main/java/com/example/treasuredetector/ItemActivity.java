@@ -551,6 +551,8 @@ public class ItemActivity extends AppCompatActivity {
 //                            Toast.makeText(ItemActivity.this ,"found current location", LENGTH_LONG).show();
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation != null) {
+                                Toast.makeText(ItemActivity.this, "Current location updated", Toast.LENGTH_SHORT).show();
+
                                 latitude = currentLocation.getLatitude();
                                 longitude = currentLocation.getLongitude();
 
