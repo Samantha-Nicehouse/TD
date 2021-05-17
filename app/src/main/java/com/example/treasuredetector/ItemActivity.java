@@ -3,22 +3,30 @@ package com.example.treasuredetector;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.os.HandlerCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +49,7 @@ import com.example.treasuredetector.repository.ItemRepository;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -61,6 +70,10 @@ import static android.widget.Toast.LENGTH_LONG;
 public class ItemActivity extends AppCompatActivity {
 
     private static final String TAG = "ItemActivity";
+    private Boolean mLocationPermissionGranted = false;
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int PICK_IMAGE = 123;
     EditText editTextTitle;
     EditText editTextDescription;
@@ -143,6 +156,9 @@ public class ItemActivity extends AppCompatActivity {
         if (flow.equals("addItem")) {
             initializeDateAndTime(Calendar.getInstance());
             initializeLocation();
+            if(isLocationPermissionGranted()){
+                getDeviceLocation();
+            }
         } else if (flow.equals("viewItem")) {
             buttonAdd.setVisibility(View.GONE);
 
@@ -181,7 +197,11 @@ public class ItemActivity extends AppCompatActivity {
 
         textViewDateAndTime.setOnClickListener(v -> showDateTimePicker());
 
-        textViewLocation.setOnClickListener(v -> initializeLocation());
+        textViewLocation.setOnClickListener(v -> {
+            if(isLocationPermissionGranted()){
+                getDeviceLocation();
+            }
+        });
 
         imageView.setOnClickListener(v -> selectImage());
 
@@ -280,11 +300,11 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void initializeLocation() {
-        
-        if (longitude == 0.0 && latitude == 0.0) {
-            helper.isLocationPermissionGranted();
-            getDeviceLocation();
-        }
+
+//        if (longitude == 0.0 && latitude == 0.0) {
+//            helper.isLocationPermissionGranted();
+//            getDeviceLocation();
+//        }
 
         String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0,10);
         String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0,10);
@@ -531,9 +551,21 @@ public class ItemActivity extends AppCompatActivity {
 //                            Toast.makeText(ItemActivity.this ,"found current location", LENGTH_LONG).show();
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation != null) {
+                                Toast.makeText(ItemActivity.this, "Current location updated", Toast.LENGTH_SHORT).show();
+
                                 latitude = currentLocation.getLatitude();
                                 longitude = currentLocation.getLongitude();
-                                initializeLocation();
+
+                                String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0,10);
+                                String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0,10);
+                                String location =
+                                        "Lat: " +
+                                                lat +
+                                                "  |  " +
+                                                "Lng: " +
+                                                lng;
+
+                                textViewLocation.setText(location);
                             }
                         } else {
                             Log.d(TAG, "onComplete: Current location is null");
@@ -547,4 +579,45 @@ public class ItemActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isLocationPermissionGranted(){
+        String[] permission = {android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if(isLocationServiceOn()){
+                    return true;
+                }
+            } else {
+                ActivityCompat.requestPermissions(ItemActivity.this, permission, LOCATION_PERMISSION_REQUEST_CODE);
+                return false;
+            }
+        } else {
+            ActivityCompat.requestPermissions(ItemActivity.this, permission, LOCATION_PERMISSION_REQUEST_CODE);
+            return false;
+        }
+        return false;
+    }
+
+    private boolean isLocationServiceOn() {
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            // Build the alert dialog
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+            builder.setTitle("Location Services Not Active");
+            builder.setMessage("Please enable Location Services and GPS");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // Show location settings when the user acknowledges the alert dialog
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                }
+            });
+            Dialog alertDialog = builder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+            return false;
+        }
+        return true;
+    }
 }
