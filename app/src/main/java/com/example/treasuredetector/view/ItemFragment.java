@@ -17,6 +17,7 @@ import com.example.treasuredetector.ItemActivity;
 import com.example.treasuredetector.R;
 
 import com.example.treasuredetector.adapter.ItemAdapter;
+import com.example.treasuredetector.helper.Helper;
 import com.example.treasuredetector.model.Item;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,6 +34,7 @@ public class ItemFragment extends Fragment {
     RecyclerView recyclerView;
     ItemAdapter adapter;
     FloatingActionButton fab;
+    Helper helper;
 
     /**
      * }
@@ -48,6 +50,7 @@ public class ItemFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
+        helper = new Helper(getActivity());
 
         fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
@@ -71,6 +74,7 @@ public class ItemFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.list);
         BuildRecyclerView();
+        helper.isLocationPermissionGranted();
         return view;
     }
 
