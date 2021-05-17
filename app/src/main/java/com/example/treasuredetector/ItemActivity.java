@@ -20,7 +20,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,7 +52,9 @@ import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
 
 import org.jetbrains.annotations.NotNull;
@@ -60,6 +64,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -109,6 +114,10 @@ public class ItemActivity extends AppCompatActivity {
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    LocationManager locationManagerNetwork;
+    LocationManager locationManagerGPS;
+    LocationListener locationListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +128,14 @@ public class ItemActivity extends AppCompatActivity {
         helper = new Helper(ItemActivity.this);
         dialogHelper = new DialogHelper(ItemActivity.this);
         itemViewModel = new ViewModelProvider(this).get(ItemViewModel.class);
+
+        locationManagerNetwork = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
+
+        locationManagerGPS = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
+
+        locationListener = new MyLocationListener();
 
         itemViewModel.setCallback(new ItemRepository.Callback() {
 
@@ -156,7 +173,7 @@ public class ItemActivity extends AppCompatActivity {
         if (flow.equals("addItem")) {
             initializeDateAndTime(Calendar.getInstance());
             initializeLocation();
-            if(isLocationPermissionGranted()){
+            if (isLocationPermissionGranted()) {
                 getDeviceLocation();
             }
         } else if (flow.equals("viewItem")) {
@@ -178,14 +195,14 @@ public class ItemActivity extends AppCompatActivity {
 
             textViewDateAndTime.setText(helper.getFormattedDate(item.getTime()));
 
-            String lat = String.valueOf(item.getLatitude()).length() <= 10 ? String.valueOf(item.getLatitude()) : String.valueOf(item.getLatitude()).substring(0,10);
-            String lng = String.valueOf(item.getLongitude()).length() <= 10 ? String.valueOf(item.getLongitude()) : String.valueOf(item.getLongitude()).substring(0,10);
+            String lat = String.valueOf(item.getLatitude()).length() <= 10 ? String.valueOf(item.getLatitude()) : String.valueOf(item.getLatitude()).substring(0, 10);
+            String lng = String.valueOf(item.getLongitude()).length() <= 10 ? String.valueOf(item.getLongitude()) : String.valueOf(item.getLongitude()).substring(0, 10);
             String location =
                     "Lat: " +
                             lat +
                             "  |  " +
                             "Lng: " +
-                                    lng;
+                            lng;
 
             textViewLocation.setText(location);
 
@@ -198,7 +215,7 @@ public class ItemActivity extends AppCompatActivity {
         textViewDateAndTime.setOnClickListener(v -> showDateTimePicker());
 
         textViewLocation.setOnClickListener(v -> {
-            if(isLocationPermissionGranted()){
+            if (isLocationPermissionGranted()) {
                 getDeviceLocation();
             }
         });
@@ -306,8 +323,8 @@ public class ItemActivity extends AppCompatActivity {
 //            getDeviceLocation();
 //        }
 
-        String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0,10);
-        String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0,10);
+        String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0, 10);
+        String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0, 10);
         String location =
                 "Lat: " +
                         lat +
@@ -413,7 +430,7 @@ public class ItemActivity extends AppCompatActivity {
         }
     }
 
-    private void loadImageInBackground(Uri uri){
+    private void loadImageInBackground(Uri uri) {
         executorService.execute(() -> {
 
             try {
@@ -435,7 +452,7 @@ public class ItemActivity extends AppCompatActivity {
         });
     }
 
-    private void loadImageOfSelectedItem(Item item){
+    private void loadImageOfSelectedItem(Item item) {
 
         executorService.execute(() -> {
 
@@ -445,7 +462,7 @@ public class ItemActivity extends AppCompatActivity {
             Bitmap bitmap = helper.getImageFromStorage(imagePath, imageName);
 
             mainThreadHandler.post(() -> {
-                if(bitmap != null){
+                if (bitmap != null) {
                     imageView.setImageBitmap(bitmap);
                 }
             });
@@ -505,8 +522,7 @@ public class ItemActivity extends AppCompatActivity {
             menuItemSave.setVisible(false);
             updateInDB();
             return true;
-        }
-        else if(item.getItemId() == R.id.actionDelete){
+        } else if (item.getItemId() == R.id.actionDelete) {
             deleteFromDB();
             return true;
         }
@@ -538,53 +554,72 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void getDeviceLocation() {
-        Log.d(TAG, "getDeviceLocation: getting the device current location");
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-        try {
-            if (true) {
-                @SuppressLint("MissingPermission") Task location = mFusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "onComplete: Found location");
-//                            Toast.makeText(ItemActivity.this ,"found current location", LENGTH_LONG).show();
-                            Location currentLocation = (Location) task.getResult();
-                            if (currentLocation != null) {
-                                Toast.makeText(ItemActivity.this, "Current location updated", Toast.LENGTH_SHORT).show();
 
-                                latitude = currentLocation.getLatitude();
-                                longitude = currentLocation.getLongitude();
-
-                                String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0,10);
-                                String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0,10);
-                                String location =
-                                        "Lat: " +
-                                                lat +
-                                                "  |  " +
-                                                "Lng: " +
-                                                lng;
-
-                                textViewLocation.setText(location);
-                            }
-                        } else {
-                            Log.d(TAG, "onComplete: Current location is null");
-                            Toast.makeText(ItemActivity.this, " unable to get current location", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        } catch (SecurityException e) {
-            Log.e(TAG, "getDeviceLocation: SecurityException" + e.getMessage());
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
+        Toast.makeText(this, "Getting device location...", Toast.LENGTH_SHORT).show();
+        dialogHelper.showDialog();
+
+        locationManagerNetwork.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER, Integer.MAX_VALUE, 10, locationListener);
+
+        locationManagerGPS.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER, Integer.MAX_VALUE, 10, locationListener);
+//        Log.d(TAG, "getDeviceLocation: getting the device current location");
+//        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+//        try {
+//            if (true) {
+//                @SuppressLint("MissingPermission") Task location = mFusedLocationProviderClient.getLastLocation();
+//                location.addOnCompleteListener(new OnCompleteListener() {
+//                    @Override
+//                    public void onComplete(@NonNull Task task) {
+//                        if (task.isSuccessful()) {
+//                            Log.d(TAG, "onComplete: Found location");
+////                            Toast.makeText(ItemActivity.this ,"found current location", LENGTH_LONG).show();
+//                            Location currentLocation = (Location) task.getResult();
+//                            if (currentLocation != null) {
+//                                Toast.makeText(ItemActivity.this, "Current location updated", Toast.LENGTH_SHORT).show();
+//
+//                                latitude = currentLocation.getLatitude();
+//                                longitude = currentLocation.getLongitude();
+//
+//                                String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0,10);
+//                                String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0,10);
+//                                String location =
+//                                        "Lat: " +
+//                                                lat +
+//                                                "  |  " +
+//                                                "Lng: " +
+//                                                lng;
+//
+//                                textViewLocation.setText(location);
+//                            }
+//                        } else {
+//                            Log.d(TAG, "onComplete: Current location is null");
+//                            Toast.makeText(ItemActivity.this, " unable to get current location", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//            }
+//        } catch (SecurityException e) {
+//            Log.e(TAG, "getDeviceLocation: SecurityException" + e.getMessage());
+//        }
     }
 
-    private boolean isLocationPermissionGranted(){
+    private boolean isLocationPermissionGranted() {
         String[] permission = {android.Manifest.permission.ACCESS_FINE_LOCATION,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION};
         if (ContextCompat.checkSelfPermission(getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(getApplicationContext(), COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                if(isLocationServiceOn()){
+                if (isLocationServiceOn()) {
                     return true;
                 }
             } else {
@@ -619,5 +654,57 @@ public class ItemActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    /*---------- Listener class to get coordinates ------------- */
+    private class MyLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location loc) {
+
+            if (loc != null) {
+                Toast.makeText(ItemActivity.this, "Current location updated", Toast.LENGTH_SHORT).show();
+                latitude = loc.getLatitude();
+                longitude = loc.getLongitude();
+
+                String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0,10);
+                String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0,10);
+                String location =
+                        "Lat: " +
+                                lat +
+                                "  |  " +
+                                "Lng: " +
+                                lng;
+
+                textViewLocation.setText(location);
+            } else {
+                Log.d(TAG, "onComplete: Current location is null");
+                Toast.makeText(ItemActivity.this, " unable to get current location", Toast.LENGTH_SHORT).show();
+            }
+            dialogHelper.dismissDialog();
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            locationManagerNetwork.removeUpdates(locationListener);
+            locationManagerGPS.removeUpdates(locationListener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

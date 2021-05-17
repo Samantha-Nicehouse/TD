@@ -68,6 +68,8 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, RegisterUserActivity.class);
             startActivity(intent);
         });
+
+        helper.isLocationPermissionGranted();
     }
 
     private void login() {
