@@ -173,7 +173,7 @@ public class Helper  {
         try {
             LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
             if (locationManager != null) {
-                @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                @SuppressLint("MissingPermission") Location location = getLastKnownLocation(context);
                 if (location != null) {
                     return String.valueOf(location.getLatitude());
                 }
@@ -189,7 +189,7 @@ public class Helper  {
         try {
             LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
             if (locationManager != null) {
-                @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                @SuppressLint("MissingPermission") Location location = getLastKnownLocation(context);
                 if (location != null) {
                     return String.valueOf(location.getLongitude());
                 }

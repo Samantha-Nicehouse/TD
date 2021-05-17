@@ -151,12 +151,14 @@ public class ItemActivity extends AppCompatActivity {
 
             textViewDateAndTime.setText(helper.getFormattedDate(item.getTime()));
 
+            String lat = String.valueOf(item.getLatitude()).length() <= 10 ? String.valueOf(item.getLatitude()) : String.valueOf(item.getLatitude()).substring(0,10);
+            String lng = String.valueOf(item.getLongitude()).length() <= 10 ? String.valueOf(item.getLongitude()) : String.valueOf(item.getLongitude()).substring(0,10);
             String location =
                     "Lat: " +
-                            (String.valueOf(item.getLatitude()).equals("0") ? "0" : (String.valueOf(item.getLatitude()).substring(0, 10)) +
+                            lat +
                             "  |  " +
                             "Lng: " +
-                                    (String.valueOf(item.getLongitude()).equals("0") ? "0" : (String.valueOf(item.getLongitude()).substring(0, 10))));
+                                    lng;
 
             textViewLocation.setText(location);
 
@@ -169,14 +171,14 @@ public class ItemActivity extends AppCompatActivity {
         textViewDateAndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ItemActivity.this.showDateTimePicker();
+                showDateTimePicker();
             }
         });
 
         textViewLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ItemActivity.this.initializeLocation();
+                initializeLocation();
             }
         });
 
@@ -284,13 +286,14 @@ public class ItemActivity extends AppCompatActivity {
             helper.isLocationPermissionGranted();
         }
 
-
+        String lat = String.valueOf(helper.getLatitude()).length() <= 10 ? String.valueOf(helper.getLatitude()) : String.valueOf(helper.getLatitude()).substring(0,10);
+        String lng = String.valueOf(helper.getLongitude()).length() <= 10 ? String.valueOf(helper.getLongitude()) : String.valueOf(helper.getLongitude()).substring(0,10);
         String location =
                 "Lat: " +
-                        (helper.getLatitude().equals("0") ? "0" : helper.getLatitude().substring(0, 10)) +
+                        lat +
                         "  |  " +
                         "Lng: " +
-                        (helper.getLongitude().equals("0") ? "0" : helper.getLongitude().substring(0, 10));
+                        lng;
 
         textViewLocation.setText(location);
     }
