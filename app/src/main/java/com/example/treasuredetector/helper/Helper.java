@@ -49,9 +49,9 @@ import static android.widget.Toast.LENGTH_LONG;
 public class Helper  {
 
     private static final String TAG = "LocationActivity";
-    private FusedLocationProviderClient mFusedLocationProviderClient;
     private final HashMap<String, Integer> hashMap;
-    Context context;
+    private Context context;
+
 
     public Helper(Context context) {
         this.context = context;
@@ -166,39 +166,39 @@ public class Helper  {
         return bestLocation;
     }
 
+    public double getLatitude() {
+//        try {
+//            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+//            if (locationManager != null) {
+//                @SuppressLint("MissingPermission") Location location = getLastKnownLocation(context);
+//                if (location != null) {
+//                    return String.valueOf(location.getLatitude());
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "0";
+//        }
+//        return "0";
+        return 0.0;
 
-
-
-    public String getLatitude() {
-        try {
-            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-            if (locationManager != null) {
-                @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (location != null) {
-                    return String.valueOf(location.getLatitude());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "0";
-        }
-        return "0";
     }
 
-    public String getLongitude() {
-        try {
-            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-            if (locationManager != null) {
-                @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (location != null) {
-                    return String.valueOf(location.getLongitude());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "0";
-        }
-        return "0";
+    public double getLongitude() {
+//        try {
+//            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+//            if (locationManager != null) {
+//                @SuppressLint("MissingPermission") Location location = getLastKnownLocation(context);
+//                if (location != null) {
+//                    return String.valueOf(location.getLongitude());
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "0";
+//        }
+//        return "0";
+        return 0.0;
     }
 
     public String saveImageToStorage(Bitmap bitmapImage, String fileName) {
@@ -245,6 +245,8 @@ public class Helper  {
             return false;
         }
     }
+
+
 
 
 }

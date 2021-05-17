@@ -1,5 +1,6 @@
 package com.example.treasuredetector;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.os.HandlerCompat;
@@ -13,10 +14,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +39,10 @@ import com.example.treasuredetector.helper.Helper;
 import com.example.treasuredetector.model.Item;
 import com.example.treasuredetector.repository.ItemRepository;
 import com.example.treasuredetector.view_model.ItemViewModel;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,11 +54,13 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static android.widget.Toast.LENGTH_LONG;
+
 //In this activity we add, view, edit and delete items
 
 public class ItemActivity extends AppCompatActivity {
 
-
+    private static final String TAG = "ItemActivity";
     private static final int PICK_IMAGE = 123;
     EditText editTextTitle;
     EditText editTextDescription;
@@ -66,8 +75,8 @@ public class ItemActivity extends AppCompatActivity {
     DialogHelper dialogHelper;
 
     private long time;
-    private double latitude;
-    private double longitude;
+    private double latitude = 0.0;
+    private double longitude = 0.0;
     private Bitmap bitmap;
 
     ItemViewModel itemViewModel;
@@ -84,6 +93,8 @@ public class ItemActivity extends AppCompatActivity {
 
     ExecutorService executorService = Executors.newFixedThreadPool(2);
     Handler mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper());
+
+    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,12 +162,14 @@ public class ItemActivity extends AppCompatActivity {
 
             textViewDateAndTime.setText(helper.getFormattedDate(item.getTime()));
 
+            String lat = String.valueOf(item.getLatitude()).length() <= 10 ? String.valueOf(item.getLatitude()) : String.valueOf(item.getLatitude()).substring(0,10);
+            String lng = String.valueOf(item.getLongitude()).length() <= 10 ? String.valueOf(item.getLongitude()) : String.valueOf(item.getLongitude()).substring(0,10);
             String location =
                     "Lat: " +
-                            (String.valueOf(item.getLatitude()).equals("0") ? "0" : (String.valueOf(item.getLatitude()).substring(0, 10)) +
+                            lat +
                             "  |  " +
                             "Lng: " +
-                                    (String.valueOf(item.getLongitude()).equals("0") ? "0" : (String.valueOf(item.getLongitude()).substring(0, 10))));
+                                    lng;
 
             textViewLocation.setText(location);
 
@@ -166,19 +179,9 @@ public class ItemActivity extends AppCompatActivity {
             }
         }
 
-        textViewDateAndTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ItemActivity.this.showDateTimePicker();
-            }
-        });
+        textViewDateAndTime.setOnClickListener(v -> showDateTimePicker());
 
-        textViewLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ItemActivity.this.initializeLocation();
-            }
-        });
+        textViewLocation.setOnClickListener(v -> initializeLocation());
 
         imageView.setOnClickListener(v -> selectImage());
 
@@ -277,20 +280,20 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void initializeLocation() {
-        latitude = Double.parseDouble(helper.getLatitude());
-        longitude = Double.parseDouble(helper.getLongitude());
-
-        if (longitude == 0 && latitude == 0) {
+        
+        if (longitude == 0.0 && latitude == 0.0) {
             helper.isLocationPermissionGranted();
+            getDeviceLocation();
         }
 
-
+        String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0,10);
+        String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0,10);
         String location =
                 "Lat: " +
-                        (helper.getLatitude().equals("0") ? "0" : helper.getLatitude().substring(0, 10)) +
+                        lat +
                         "  |  " +
                         "Lng: " +
-                        (helper.getLongitude().equals("0") ? "0" : helper.getLongitude().substring(0, 10));
+                        lng;
 
         textViewLocation.setText(location);
     }
@@ -334,15 +337,15 @@ public class ItemActivity extends AppCompatActivity {
         @Override
         public View getDropDownView(int position, View convertView,
                                     @NotNull ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
+            return getCustomView(position, parent);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
+            return getCustomView(position, parent);
         }
 
-        public View getCustomView(int position, View convertView, ViewGroup parent) {
+        public View getCustomView(int position, ViewGroup parent) {
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.item_category_icon, parent, false);
@@ -512,6 +515,36 @@ public class ItemActivity extends AppCompatActivity {
         textViewDateAndTime.setBackgroundTintList(getResources().getColorStateList(colorId));
         textViewLocation.setBackgroundTintList(getResources().getColorStateList(colorId));
         imageView.setBackgroundTintList(getResources().getColorStateList(colorId));
+    }
+
+    private void getDeviceLocation() {
+        Log.d(TAG, "getDeviceLocation: getting the device current location");
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+        try {
+            if (true) {
+                @SuppressLint("MissingPermission") Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: Found location");
+//                            Toast.makeText(ItemActivity.this ,"found current location", LENGTH_LONG).show();
+                            Location currentLocation = (Location) task.getResult();
+                            if (currentLocation != null) {
+                                latitude = currentLocation.getLatitude();
+                                longitude = currentLocation.getLongitude();
+                                initializeLocation();
+                            }
+                        } else {
+                            Log.d(TAG, "onComplete: Current location is null");
+                            Toast.makeText(ItemActivity.this, " unable to get current location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            Log.e(TAG, "getDeviceLocation: SecurityException" + e.getMessage());
+        }
     }
 
 }
