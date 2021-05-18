@@ -28,7 +28,6 @@ public class ItemRepository {
         lastFiveItems = itemDao.getLastFiveEntries();
         executorService = Executors.newFixedThreadPool(3);
         helper = new Helper(application);
-
     }
 
     //the following methods are the API that passes items to the repository abstractions layer

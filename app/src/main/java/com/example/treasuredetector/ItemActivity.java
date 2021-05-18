@@ -1,43 +1,26 @@
 package com.example.treasuredetector;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.os.HandlerCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,41 +28,28 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.treasuredetector.adapter.CategoryAdapter;
+import com.example.treasuredetector.helper.Constants;
 import com.example.treasuredetector.helper.DialogHelper;
 import com.example.treasuredetector.helper.Helper;
+import com.example.treasuredetector.helper.LocationHelper;
+import com.example.treasuredetector.model.Category;
 import com.example.treasuredetector.model.Item;
-import com.example.treasuredetector.repository.ItemRepository;
 import com.example.treasuredetector.view_model.ItemViewModel;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.tasks.CancellationToken;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnTokenCanceledListener;
-import com.google.android.gms.tasks.Task;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static android.widget.Toast.LENGTH_LONG;
+import static com.example.treasuredetector.helper.Helper.LOCATION_PERMISSION;
 
 //In this activity we add, view, edit and delete items
 
 public class ItemActivity extends AppCompatActivity {
 
-    private static final String TAG = "ItemActivity";
-    private Boolean mLocationPermissionGranted = false;
-    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int PICK_IMAGE = 123;
     EditText editTextTitle;
     EditText editTextDescription;
@@ -92,6 +62,7 @@ public class ItemActivity extends AppCompatActivity {
 
     Helper helper;
     DialogHelper dialogHelper;
+    LocationHelper locationHelper;
 
     private long time;
     private double latitude = 0.0;
@@ -104,7 +75,7 @@ public class ItemActivity extends AppCompatActivity {
     Item item;
     String flow;
 
-    List<CategoryIcon> categoryIconArrayList;
+    List<Category> categoryIconArrayList;
 
     MenuItem menuItemEdit;
     MenuItem menuItemSave;
@@ -113,11 +84,6 @@ public class ItemActivity extends AppCompatActivity {
     ExecutorService executorService = Executors.newFixedThreadPool(2);
     Handler mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper());
 
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-
-    LocationManager locationManagerNetwork;
-    LocationManager locationManagerGPS;
-    LocationListener locationListener;
 
     private boolean recordedSizeOfOriginalList = false;
     private int sizeOfOriginalList = 0;
@@ -131,48 +97,48 @@ public class ItemActivity extends AppCompatActivity {
 
         helper = new Helper(ItemActivity.this);
         dialogHelper = new DialogHelper(ItemActivity.this);
+        locationHelper = new LocationHelper(ItemActivity.this);
+        locationHelper.setOnLocationChange(location -> {
+            if (location != null) {
+                Toast.makeText(ItemActivity.this, "Current location updated", Toast.LENGTH_SHORT).show();
+                setupLocationTextView(location.getLatitude(), location.getLongitude());
+            } else {
+                Toast.makeText(ItemActivity.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
+            }
+            dialogHelper.dismissDialog();
+        });
+
         itemViewModel = new ViewModelProvider(this).get(ItemViewModel.class);
 
-        itemViewModel.getAllItems().observe(this, new Observer<List<Item>>() {
-            @Override
-            public void onChanged(List<Item> items) {
+        itemViewModel.getAllItems().observe(this, items -> {
 
-                if(!recordedSizeOfOriginalList){
-                    sizeOfOriginalList = items.size();
-                    recordedSizeOfOriginalList = true;
-                    return;
-                }
+            if (!recordedSizeOfOriginalList) {
+                sizeOfOriginalList = items.size();
+                recordedSizeOfOriginalList = true;
+                return;
+            }
 
-                //Item added
-                if(items.size() > sizeOfOriginalList){
-                    dialogHelper.dismissDialog();
-                    Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-                    onBackPressed();
-                }
-                //Item updated
-                else if(items.size() == sizeOfOriginalList){
-                    dialogHelper.dismissDialog();
-                    Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
-                    editMode(false);
-                }
-                //Item Deleted
-                else if(items.size() < sizeOfOriginalList){
-                    dialogHelper.dismissDialog();
-                    Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
-                    onBackPressed();
-                }
+            //Item added
+            if (items.size() > sizeOfOriginalList) {
+                dialogHelper.dismissDialog();
+                Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+            //Item updated
+            else if (items.size() == sizeOfOriginalList) {
+                dialogHelper.dismissDialog();
+                Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                editMode(false);
+            }
+            //Item Deleted
+            else if (items.size() < sizeOfOriginalList) {
+                dialogHelper.dismissDialog();
+                Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         });
 
-        locationManagerNetwork = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
-
-        locationManagerGPS = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
-
-        locationListener = new MyLocationListener();
-
-        categoryIconArrayList = getCategoryIconList();
+        categoryIconArrayList = Constants.getCategoryIconList();
 
         CategoryAdapter adapter = new CategoryAdapter(this, R.layout.item_category_icon, categoryIconArrayList);
         spinnerCategory.setAdapter(adapter);
@@ -182,10 +148,8 @@ public class ItemActivity extends AppCompatActivity {
 
         if (flow.equals("addItem")) {
             initializeDateAndTime(Calendar.getInstance());
-            initializeLocation();
-            if (isLocationPermissionGranted()) {
-                getDeviceLocation();
-            }
+            setupLocationTextView(latitude, longitude);
+            getDeviceLocation();
         } else if (flow.equals("viewItem")) {
             buttonAdd.setVisibility(View.GONE);
 
@@ -197,7 +161,7 @@ public class ItemActivity extends AppCompatActivity {
             editTextDescription.setText(item.getDescription());
 
             for (int i = 0; i < categoryIconArrayList.size(); i++) {
-                if (item.getCategory().equals(categoryIconArrayList.get(i).category)) {
+                if (item.getCategory().equals(categoryIconArrayList.get(i).getName())) {
                     spinnerCategory.setSelection(i);
                     break;
                 }
@@ -205,30 +169,17 @@ public class ItemActivity extends AppCompatActivity {
 
             textViewDateAndTime.setText(helper.getFormattedDate(item.getTime()));
 
-            String lat = String.valueOf(item.getLatitude()).length() <= 10 ? String.valueOf(item.getLatitude()) : String.valueOf(item.getLatitude()).substring(0, 10);
-            String lng = String.valueOf(item.getLongitude()).length() <= 10 ? String.valueOf(item.getLongitude()) : String.valueOf(item.getLongitude()).substring(0, 10);
-            String location =
-                    "Lat: " +
-                            lat +
-                            "  |  " +
-                            "Lng: " +
-                            lng;
-
-            textViewLocation.setText(location);
+            setupLocationTextView(item.getLatitude(), item.getLongitude());
 
             if (item.getImageName() != null) {
                 //Getting image from stoarge then display is a heavy task hence we do it on a background thread
-                loadImageOfSelectedItem(item);
+                loadImageOfSelectedItemInBackground(item);
             }
         }
 
         textViewDateAndTime.setOnClickListener(v -> showDateTimePicker());
 
-        textViewLocation.setOnClickListener(v -> {
-            if (isLocationPermissionGranted()) {
-                getDeviceLocation();
-            }
-        });
+        textViewLocation.setOnClickListener(v -> getDeviceLocation());
 
         imageView.setOnClickListener(v -> selectImage());
 
@@ -238,7 +189,7 @@ public class ItemActivity extends AppCompatActivity {
     private void addToDB() {
         String title = editTextTitle.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
-        String category = ((CategoryIcon) spinnerCategory.getSelectedItem()).getCategory();
+        String category = ((Category) spinnerCategory.getSelectedItem()).getName();
 
         if (title.isEmpty()) {
             Toast.makeText(ItemActivity.this, "Please enter title", Toast.LENGTH_SHORT).show();
@@ -266,7 +217,7 @@ public class ItemActivity extends AppCompatActivity {
     private void updateInDB() {
         String title = editTextTitle.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
-        String category = ((CategoryIcon) spinnerCategory.getSelectedItem()).getCategory();
+        String category = ((Category) spinnerCategory.getSelectedItem()).getName();
 
         if (title.isEmpty()) {
             Toast.makeText(ItemActivity.this, "Please enter title", Toast.LENGTH_SHORT).show();
@@ -326,12 +277,10 @@ public class ItemActivity extends AppCompatActivity {
         textViewDateAndTime.setText(helper.getFormattedDate(time));
     }
 
-    private void initializeLocation() {
+    private void setupLocationTextView(double latitude, double longitude) {
 
-//        if (longitude == 0.0 && latitude == 0.0) {
-//            helper.isLocationPermissionGranted();
-//            getDeviceLocation();
-//        }
+        this.latitude = latitude;
+        this.longitude = longitude;
 
         String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0, 10);
         String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0, 10);
@@ -369,80 +318,8 @@ public class ItemActivity extends AppCompatActivity {
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
     }
 
-    static class CategoryAdapter extends ArrayAdapter<CategoryIcon> {
-
-        Context context;
-        List<CategoryIcon> list;
-
-
-        public CategoryAdapter(Context context, int resource, List<CategoryIcon> list) {
-            super(context, resource, list);
-            this.context = context;
-            this.list = list;
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView,
-                                    @NotNull ViewGroup parent) {
-            return getCustomView(position, parent);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, parent);
-        }
-
-        public View getCustomView(int position, ViewGroup parent) {
-
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.item_category_icon, parent, false);
-
-            TextView textView = view.findViewById(R.id.textView);
-            ImageView imageView = view.findViewById(R.id.imageView);
-
-            textView.setText(list.get(position).getCategory());
-            imageView.setImageResource(list.get(position).getIcon());
-
-            return view;
-        }
-    }
-
-    private List<CategoryIcon> getCategoryIconList() {
-        List<CategoryIcon> list = new ArrayList<>();
-        list.add(new CategoryIcon("Select", R.drawable.ic_baseline_arrow_drop_down_24));
-        list.add(new CategoryIcon("Bottle Cap", R.drawable.ic_bottlecap));
-        list.add(new CategoryIcon("Bow and Arrow", R.drawable.ic_bow_and_arrow));
-        list.add(new CategoryIcon("Bullets", R.drawable.ic_bullets));
-        list.add(new CategoryIcon("Coins", R.drawable.ic_coins));
-        list.add(new CategoryIcon("Jewelry", R.drawable.ic_jewelry));
-        list.add(new CategoryIcon("Key", R.drawable.ic_key));
-        list.add(new CategoryIcon("Miscellaneous", R.drawable.ic_miscellaneous));
-        list.add(new CategoryIcon("Quiver", R.drawable.ic_quiver));
-        list.add(new CategoryIcon("Sword", R.drawable.ic_sword));
-        return list;
-    }
-
-    static class CategoryIcon {
-        private final String category;
-        private final int icon;
-
-        public CategoryIcon(String category, int icon) {
-            this.category = category;
-            this.icon = icon;
-        }
-
-        public String getCategory() {
-            return category;
-        }
-
-        public int getIcon() {
-            return icon;
-        }
-    }
-
     private void loadImageInBackground(Uri uri) {
         executorService.execute(() -> {
-
             try {
                 InputStream inputStream = getContentResolver().openInputStream(uri); //100ms
                 bitmap = BitmapFactory.decodeStream(inputStream); // 200ms
@@ -450,27 +327,21 @@ public class ItemActivity extends AppCompatActivity {
                 e.printStackTrace();
                 bitmap = null;
             }
-
             mainThreadHandler.post(() -> {
                 if (bitmap == null) {
                     Toast.makeText(ItemActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 imageView.setImageBitmap(bitmap);
             });
         });
     }
 
-    private void loadImageOfSelectedItem(Item item) {
-
+    private void loadImageOfSelectedItemInBackground(Item item) {
         executorService.execute(() -> {
-
-
             String imagePath = item.getImagePath();
             String imageName = item.getImageName();
             Bitmap bitmap = helper.getImageFromStorage(imagePath, imageName);
-
             mainThreadHandler.post(() -> {
                 if (bitmap != null) {
                     imageView.setImageBitmap(bitmap);
@@ -483,19 +354,22 @@ public class ItemActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
-
-            if (data == null) {
-                //Display an error
-                return;
+        if (requestCode == PICK_IMAGE) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
+                    /*Since getting image from gallery then converting it into bitmap is a time consuming task therefore
+                        we do it in a background thread*/
+                    loadImageInBackground(data.getData());
+                }
+            } else {
+                Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
             }
-
-            /*Since getting image from gallery then converting it into bitmap is a time consuming task therefore
-            we do it in a background thread*/
-            loadImageInBackground(data.getData());
-
-        } else {
-            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == LOCATION_PERMISSION) {
+            if (resultCode == RESULT_OK) {
+                getDeviceLocation();
+            } else {
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -564,157 +438,19 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void getDeviceLocation() {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (helper.isLocationPermissionGranted(ItemActivity.this)) {
+            Toast.makeText(this, "Getting device location...", Toast.LENGTH_SHORT).show();
+            dialogHelper.showDialog();
+            locationHelper.startLocationChangeListener();
         }
-        Toast.makeText(this, "Getting device location...", Toast.LENGTH_SHORT).show();
-        dialogHelper.showDialog();
-
-        locationManagerNetwork.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER, Integer.MAX_VALUE, 10, locationListener);
-
-        locationManagerGPS.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, Integer.MAX_VALUE, 10, locationListener);
-//        Log.d(TAG, "getDeviceLocation: getting the device current location");
-//        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-//        try {
-//            if (true) {
-//                @SuppressLint("MissingPermission") Task location = mFusedLocationProviderClient.getLastLocation();
-//                location.addOnCompleteListener(new OnCompleteListener() {
-//                    @Override
-//                    public void onComplete(@NonNull Task task) {
-//                        if (task.isSuccessful()) {
-//                            Log.d(TAG, "onComplete: Found location");
-////                            Toast.makeText(ItemActivity.this ,"found current location", LENGTH_LONG).show();
-//                            Location currentLocation = (Location) task.getResult();
-//                            if (currentLocation != null) {
-//                                Toast.makeText(ItemActivity.this, "Current location updated", Toast.LENGTH_SHORT).show();
-//
-//                                latitude = currentLocation.getLatitude();
-//                                longitude = currentLocation.getLongitude();
-//
-//                                String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0,10);
-//                                String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0,10);
-//                                String location =
-//                                        "Lat: " +
-//                                                lat +
-//                                                "  |  " +
-//                                                "Lng: " +
-//                                                lng;
-//
-//                                textViewLocation.setText(location);
-//                            }
-//                        } else {
-//                            Log.d(TAG, "onComplete: Current location is null");
-//                            Toast.makeText(ItemActivity.this, " unable to get current location", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-//            }
-//        } catch (SecurityException e) {
-//            Log.e(TAG, "getDeviceLocation: SecurityException" + e.getMessage());
-//        }
-    }
-
-    private boolean isLocationPermissionGranted() {
-        String[] permission = {android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                if (isLocationServiceOn()) {
-                    return true;
-                }
-            } else {
-                ActivityCompat.requestPermissions(ItemActivity.this, permission, LOCATION_PERMISSION_REQUEST_CODE);
-                return false;
-            }
-        } else {
-            ActivityCompat.requestPermissions(ItemActivity.this, permission, LOCATION_PERMISSION_REQUEST_CODE);
-            return false;
-        }
-        return false;
-    }
-
-    private boolean isLocationServiceOn() {
-        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            // Build the alert dialog
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-            builder.setTitle("Location Services Not Active");
-            builder.setMessage("Please enable Location Services and GPS");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    // Show location settings when the user acknowledges the alert dialog
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                }
-            });
-            Dialog alertDialog = builder.create();
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.show();
-            return false;
-        }
-        return true;
-    }
-
-    /*---------- Listener class to get coordinates ------------- */
-    private class MyLocationListener implements LocationListener {
-
-        @Override
-        public void onLocationChanged(Location loc) {
-
-            if (loc != null) {
-                Toast.makeText(ItemActivity.this, "Current location updated", Toast.LENGTH_SHORT).show();
-                latitude = loc.getLatitude();
-                longitude = loc.getLongitude();
-
-                String lat = String.valueOf(latitude).length() <= 10 ? String.valueOf(latitude) : String.valueOf(latitude).substring(0,10);
-                String lng = String.valueOf(longitude).length() <= 10 ? String.valueOf(longitude) : String.valueOf(longitude).substring(0,10);
-                String location =
-                        "Lat: " +
-                                lat +
-                                "  |  " +
-                                "Lng: " +
-                                lng;
-
-                textViewLocation.setText(location);
-            } else {
-                Log.d(TAG, "onComplete: Current location is null");
-                Toast.makeText(ItemActivity.this, " unable to get current location", Toast.LENGTH_SHORT).show();
-            }
-            dialogHelper.dismissDialog();
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
+        else {
+            Toast.makeText(this, "Kindly grant location permission", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            locationManagerNetwork.removeUpdates(locationListener);
-            locationManagerGPS.removeUpdates(locationListener);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        locationHelper.removeLocationChangeListener();
     }
 }

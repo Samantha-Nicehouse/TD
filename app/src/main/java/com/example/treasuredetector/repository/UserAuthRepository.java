@@ -10,6 +10,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import java.util.Objects;
+
 public class UserAuthRepository {
 
 
@@ -29,14 +31,12 @@ public class UserAuthRepository {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "createUserWithEmail:success");
                         //This assign the name to this newly registered user
                         new UserProfileChangeRequest.Builder().setDisplayName(name).build();
                         userMutableLiveData.postValue(mAuth.getCurrentUser());
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                        Toast.makeText(application, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(application, Objects.requireNonNull(task.getException()).getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                         userMutableLiveData.postValue(null);
                     }
                 });
@@ -47,12 +47,10 @@ public class UserAuthRepository {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithEmail:success");
                         userMutableLiveData.postValue(mAuth.getCurrentUser());
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        Toast.makeText(application, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(application, Objects.requireNonNull(task.getException()).getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                         userMutableLiveData.postValue(null);
                     }
                 });

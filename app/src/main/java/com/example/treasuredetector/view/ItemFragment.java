@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,19 +17,14 @@ import com.example.treasuredetector.R;
 
 import com.example.treasuredetector.adapter.ItemAdapter;
 import com.example.treasuredetector.helper.Helper;
-import com.example.treasuredetector.model.Item;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
  */
 public class ItemFragment extends Fragment {
-    private ItemViewModel itemViewModel;
     RecyclerView recyclerView;
     ItemAdapter adapter;
     FloatingActionButton fab;
@@ -61,22 +55,17 @@ public class ItemFragment extends Fragment {
         //pass the fragment so that viewmodel knows which lifecycle to scope to
         //android activity will destroy the fragment when "this" is finished
 
-        itemViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
-        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
-            @Override
-            public void onChanged(List<Item> items) {
-
-                adapter.setItems(items);
-                adapter.notifyDataSetChanged();
-            }
+        ItemViewModel itemViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
+        itemViewModel.getAllItems().observe(getViewLifecycleOwner(), items -> {
+            adapter.setItems(items);
+            adapter.notifyDataSetChanged();
         });
 
         recyclerView = view.findViewById(R.id.list);
         BuildRecyclerView();
-        helper.isLocationPermissionGranted();
+        helper.isLocationPermissionGranted(getActivity());
         return view;
     }
-
 
     private void BuildRecyclerView() {
         recyclerView.setHasFixedSize(true);
@@ -93,22 +82,6 @@ public class ItemFragment extends Fragment {
         });
         //set the adapter
         recyclerView.setAdapter(adapter);
-
-    }
-
-    private void fillDemoData() {
-
-        List<Item> items = new ArrayList<>();
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.15932, 10.222598));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.166591, 10.215675));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.131467, 10.205546));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.130557, 10.207623));
-        items.add(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.129068, 10.194942));
-
-
-        adapter.setItems(items);
-        adapter.notifyDataSetChanged();
-
     }
 
 }

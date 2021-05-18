@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        helper.isLocationPermissionGranted();
+        helper.isLocationPermissionGranted(LoginActivity.this);
     }
 
     private void login() {
