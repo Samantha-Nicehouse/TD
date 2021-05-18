@@ -1,21 +1,27 @@
 package com.example.treasuredetector.repository;
 
+import android.app.Application;
 import android.util.Log;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.UserProfileChangeRequest;
+import android.widget.Toast;
 
-import java.util.Objects;
+import androidx.lifecycle.MutableLiveData;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class UserAuthRepository {
 
 
+    private final Application application;
     private static final String TAG = "UserAuthRepository";
     private final FirebaseAuth mAuth;
-    CallbackRegister callbackRegister;
-    CallbackLogin callbackLogin;
+    private final MutableLiveData<FirebaseUser> userMutableLiveData;
 
-    public UserAuthRepository() {
-        mAuth = FirebaseAuth.getInstance();
+    public UserAuthRepository(Application application) {
+        this.application = application;
+        this.mAuth = FirebaseAuth.getInstance();
+        this.userMutableLiveData = new MutableLiveData<>();
     }
 
     public void registerUser(String email, String password, String name) {
@@ -24,20 +30,15 @@ public class UserAuthRepository {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "createUserWithEmail:success");
-
                         //This assign the name to this newly registered user
                         new UserProfileChangeRequest.Builder().setDisplayName(name).build();
-
-                        callbackRegister.registerSuccessful();
+                        userMutableLiveData.postValue(mAuth.getCurrentUser());
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                        callbackRegister.registerFailed(Objects.requireNonNull(task.getException()).getLocalizedMessage());
+                        Toast.makeText(application, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        userMutableLiveData.postValue(null);
                     }
-                })
-                .addOnCanceledListener(() -> {
-                    Log.d(TAG, "onCanceled: ");
-                    callbackRegister.registerFailed("canceled");
                 });
     }
 
@@ -47,36 +48,17 @@ public class UserAuthRepository {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithEmail:success");
-                        callbackLogin.loginSuccessful();
+                        userMutableLiveData.postValue(mAuth.getCurrentUser());
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        callbackLogin.loginFailed(Objects.requireNonNull(task.getException()).getLocalizedMessage());
+                        Toast.makeText(application, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        userMutableLiveData.postValue(null);
                     }
-                })
-                .addOnCanceledListener(() -> {
-                    Log.d(TAG, "onCancelled: ");
-                    callbackLogin.loginFailed("cancelled");
                 });
     }
 
-    public void setCallbackRegister(CallbackRegister callbackRegister) {
-        this.callbackRegister = callbackRegister;
-    }
-
-    public interface CallbackRegister {
-        void registerSuccessful();
-
-        void registerFailed(String msg);
-    }
-
-    public void setCallbackLogin(CallbackLogin callbackLogin){
-        this.callbackLogin = callbackLogin;
-    }
-
-    public interface CallbackLogin {
-        void loginSuccessful();
-
-        void loginFailed(String msg);
+    public MutableLiveData<FirebaseUser> getUserMutableLiveData(){
+        return userMutableLiveData;
     }
 }

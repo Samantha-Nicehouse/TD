@@ -4,17 +4,21 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.treasuredetector.repository.UserAuthRepository;
+import com.google.firebase.auth.FirebaseUser;
 
 public class UserAuthViewModel extends AndroidViewModel {
 
     UserAuthRepository userAuthRepository;
+    MutableLiveData<FirebaseUser> userMutableLiveData;
 
     public UserAuthViewModel(@NonNull Application application) {
         super(application);
 
-        userAuthRepository = new UserAuthRepository();
+        userAuthRepository = new UserAuthRepository(application);
+        userMutableLiveData = userAuthRepository.getUserMutableLiveData();
     }
 
     public void registerUser(String email, String password, String name) {
@@ -25,11 +29,7 @@ public class UserAuthViewModel extends AndroidViewModel {
         userAuthRepository.loginUser(email, password);
     }
 
-    public void setCallbackRegister(UserAuthRepository.CallbackRegister callbackRegister) {
-        userAuthRepository.setCallbackRegister(callbackRegister);
-    }
-
-    public void setCallbackLogin(UserAuthRepository.CallbackLogin callbackLogin) {
-        userAuthRepository.setCallbackLogin(callbackLogin);
+    public MutableLiveData<FirebaseUser> getUserMutableLiveData(){
+        return userMutableLiveData;
     }
 }

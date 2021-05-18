@@ -25,11 +25,13 @@
         <activity
             android:name=".SplashActivity"
             android:windowSoftInputMode="stateHidden">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity
@@ -43,7 +45,9 @@
         <activity
             android:name=".ItemActivity"
             android:label="Item"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden" >
+
+        </activity>
         <activity
             android:name=".RegisterUserActivity"
             android:windowSoftInputMode="stateHidden" />

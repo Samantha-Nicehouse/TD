@@ -20,6 +20,7 @@ public class ItemViewModel extends AndroidViewModel {
     //variables
     ItemRepository repository;
     private final LiveData<List<Item>> allItems;
+    private final LiveData<List<Item>> lastFiveItems;
 
     //constructor
     public ItemViewModel(@NonNull Application application) {
@@ -27,14 +28,7 @@ public class ItemViewModel extends AndroidViewModel {
 
         this.repository = new ItemRepository(application);
         allItems = repository.getAllItems();
-    }
-
-    public void setCallback(ItemRepository.Callback callback) {
-        this.repository.setCallback(callback);
-    }
-
-    public void setCallbackMap(ItemRepository.CallbackMap callbackMap){
-        this.repository.setCallbackMap(callbackMap);
+        lastFiveItems = repository.getLastFiveEntries();
     }
 
     //activity only has references to the viewmodel not to the repository
@@ -54,8 +48,9 @@ public class ItemViewModel extends AndroidViewModel {
         repository.delete(item);
     }
 
-    public void getLastFiveEntries(){
-        repository.getLastFiveEntries();
+    public LiveData<List<Item>> getLastFiveEntries()
+    {
+        return lastFiveItems;
     }
 
     public LiveData<List<Item>> getAllItems() {

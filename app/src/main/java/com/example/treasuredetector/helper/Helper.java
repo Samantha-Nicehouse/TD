@@ -6,30 +6,20 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.example.treasuredetector.R;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,11 +34,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.content.Context.LOCATION_SERVICE;
-import static android.widget.Toast.LENGTH_LONG;
 
 public class Helper  {
 
-    private static final String TAG = "LocationActivity";
+    private static final String TAG = "Helper";
+
     private final HashMap<String, Integer> hashMap;
     private Context context;
 
@@ -105,12 +95,11 @@ public class Helper  {
     }
 
     public boolean isLocationPermissionGranted() {
-        String TAG = "Information Activity";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG, "Permission is granted");
+                Log.d(TAG, "Permission is granted");
                 Location location = getLastKnownLocation(context);
                 if (location == null) {
                     askUserToTurnOnLocations(context);
@@ -136,12 +125,10 @@ public class Helper  {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Location Services Not Active");
             builder.setMessage("Please enable Location Services and GPS");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    // Show location settings when the user acknowledges the alert dialog
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    context.startActivity(intent);
-                }
+            builder.setPositiveButton("OK", (dialogInterface, i) -> {
+                // Show location settings when the user acknowledges the alert dialog
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                context.startActivity(intent);
             });
             Dialog alertDialog = builder.create();
             alertDialog.setCanceledOnTouchOutside(false);
@@ -164,41 +151,6 @@ public class Helper  {
             }
         }
         return bestLocation;
-    }
-
-    public double getLatitude() {
-//        try {
-//            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-//            if (locationManager != null) {
-//                @SuppressLint("MissingPermission") Location location = getLastKnownLocation(context);
-//                if (location != null) {
-//                    return String.valueOf(location.getLatitude());
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "0";
-//        }
-//        return "0";
-        return 0.0;
-
-    }
-
-    public double getLongitude() {
-//        try {
-//            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-//            if (locationManager != null) {
-//                @SuppressLint("MissingPermission") Location location = getLastKnownLocation(context);
-//                if (location != null) {
-//                    return String.valueOf(location.getLongitude());
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "0";
-//        }
-//        return "0";
-        return 0.0;
     }
 
     public String saveImageToStorage(Bitmap bitmapImage, String fileName) {

@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.widget.Toast.*;
@@ -54,7 +56,7 @@ public class MapsFragment extends Fragment {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
 
     ItemViewModel itemViewModel;
-    List<Item> itemList;
+
 
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -75,7 +77,15 @@ public class MapsFragment extends Fragment {
             Log.d(TAG, "onMapReady: Map is Ready");
             //when map is loaded
             mMap = googleMap;
-            moveCamera();
+
+            itemViewModel = new ViewModelProvider(getActivity()).get(ItemViewModel.class);
+            itemViewModel.getLastFiveEntries().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
+                @Override
+                public void onChanged(List<Item> items) {
+                    moveCamera(items);
+                }
+            });
+//            moveCamera();
 
 //            if (mLocationPermissionGranted) {
 ////                getDeviceLocation();
@@ -96,14 +106,7 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        itemViewModel = new ViewModelProvider(getActivity()).get(ItemViewModel.class);
-        itemViewModel.setCallbackMap(new ItemRepository.CallbackMap() {
-            @Override
-            public void onItemsFetched(List<Item> list) {
-                itemList = list;
-            }
-        });
-        itemViewModel.getLastFiveEntries();
+
 
         return inflater.inflate(R.layout.fragment_maps, container, false);
     }
@@ -162,16 +165,18 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private void moveCamera() {
+    private void moveCamera(List<Item> itemList) {
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(itemList.get(0).getLatitude(), itemList.get(0).getLongitude()), DEFAULT_ZOOM));
-        MarkerOptions options = new MarkerOptions();
+        if(itemList != null && itemList.size() > 0){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(itemList.get(0).getLatitude(), itemList.get(0).getLongitude()), DEFAULT_ZOOM));
+            MarkerOptions options = new MarkerOptions();
 
-        for (Item item: itemList) {
-            options.position(new LatLng(item.getLatitude(), item.getLongitude()));
-            options.title(item.getTitle());
-            options.snippet(item.getDescription());
-            mMap.addMarker(options);
+            for (Item item: itemList) {
+                options.position(new LatLng(item.getLatitude(), item.getLongitude()));
+                options.title(item.getTitle());
+                options.snippet(item.getDescription());
+                mMap.addMarker(options);
+            }
         }
     }
 }

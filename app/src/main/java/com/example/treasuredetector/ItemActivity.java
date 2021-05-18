@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.os.HandlerCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
@@ -118,6 +119,9 @@ public class ItemActivity extends AppCompatActivity {
     LocationManager locationManagerGPS;
     LocationListener locationListener;
 
+    private boolean recordedSizeOfOriginalList = false;
+    private int sizeOfOriginalList = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +133,37 @@ public class ItemActivity extends AppCompatActivity {
         dialogHelper = new DialogHelper(ItemActivity.this);
         itemViewModel = new ViewModelProvider(this).get(ItemViewModel.class);
 
+        itemViewModel.getAllItems().observe(this, new Observer<List<Item>>() {
+            @Override
+            public void onChanged(List<Item> items) {
+
+                if(!recordedSizeOfOriginalList){
+                    sizeOfOriginalList = items.size();
+                    recordedSizeOfOriginalList = true;
+                    return;
+                }
+
+                //Item added
+                if(items.size() > sizeOfOriginalList){
+                    dialogHelper.dismissDialog();
+                    Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                }
+                //Item updated
+                else if(items.size() == sizeOfOriginalList){
+                    dialogHelper.dismissDialog();
+                    Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                    editMode(false);
+                }
+                //Item Deleted
+                else if(items.size() < sizeOfOriginalList){
+                    dialogHelper.dismissDialog();
+                    Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                }
+            }
+        });
+
         locationManagerNetwork = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
@@ -136,31 +171,6 @@ public class ItemActivity extends AppCompatActivity {
                 getSystemService(Context.LOCATION_SERVICE);
 
         locationListener = new MyLocationListener();
-
-        itemViewModel.setCallback(new ItemRepository.Callback() {
-
-            @Override
-            public void onItemAdded() {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-                onBackPressed();
-            }
-
-            @Override
-            public void onItemUpdated() {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
-                editMode(false);
-//                onBackPressed();
-            }
-
-            @Override
-            public void onItemDeleted() {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
-                onBackPressed();
-            }
-        });
 
         categoryIconArrayList = getCategoryIconList();
 
