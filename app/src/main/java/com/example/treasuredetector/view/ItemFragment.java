@@ -68,7 +68,6 @@ public class ItemFragment extends Fragment {
 
                 adapter.setItems(items);
                 adapter.notifyDataSetChanged();
-
             }
         });
 

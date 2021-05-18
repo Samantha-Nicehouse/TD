@@ -10,7 +10,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.treasuredetector.dao.ItemDao;
 import com.example.treasuredetector.model.Item;
-import com.example.treasuredetector.view_model.ItemViewModel;
 
 import java.util.Date;
 import java.util.concurrent.Executors;
@@ -37,11 +36,11 @@ public abstract class TreasureDetectorDatabase extends RoomDatabase {
                             Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.15932211, 10.22259811));
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.16659111, 10.21567511));
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.13146711, 10.20554611));
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.13055711, 10.20762311));
-                                    getInstance(context).itemDao().insert(new Item("Title", "Description", "Miscellaneous", new Date().getTime(), 56.12906811, 10.19494211));
+                                    getInstance(context).itemDao().insert(new Item("Title1", "Description1", "Miscellaneous", new Date().getTime(), 56.15932211, 10.22259811));
+                                    getInstance(context).itemDao().insert(new Item("Title2", "Description2", "Miscellaneous", new Date().getTime(), 56.16659111, 10.21567511));
+                                    getInstance(context).itemDao().insert(new Item("Title3", "Description3", "Miscellaneous", new Date().getTime(), 56.13146711, 10.20554611));
+                                    getInstance(context).itemDao().insert(new Item("Title4", "Description4", "Miscellaneous", new Date().getTime(), 56.13055711, 10.20762311));
+                                    getInstance(context).itemDao().insert(new Item("Title5", "Description5", "Miscellaneous", new Date().getTime(), 56.12906811, 10.19494211));
 
                                 }
                             });

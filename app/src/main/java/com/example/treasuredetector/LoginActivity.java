@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.example.treasuredetector.helper.DialogHelper;
 import com.example.treasuredetector.helper.Helper;
-import com.example.treasuredetector.repository.UserAuthRepository;
 import com.example.treasuredetector.view_model.UserAuthViewModel;
 
 public class LoginActivity extends AppCompatActivity {
@@ -37,24 +36,16 @@ public class LoginActivity extends AppCompatActivity {
         dialogHelper = new DialogHelper(LoginActivity.this);
         helper = new Helper(LoginActivity.this);
         userAuthViewModel = new ViewModelProvider(this).get(UserAuthViewModel.class);
-        userAuthViewModel.setCallbackLogin(new UserAuthRepository.CallbackLogin() {
-            @Override
-            public void loginSuccessful() {
-                dialogHelper.dismissDialog();
 
+        userAuthViewModel.getUserMutableLiveData().observe(this, firebaseUser -> {
+            if (firebaseUser != null) {
                 Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
             }
-
-            @Override
-            public void loginFailed(String msg) {
-                dialogHelper.dismissDialog();
-
-                Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
-            }
+            dialogHelper.dismissDialog();
         });
 
         editTextEmail = findViewById(R.id.editTextEmail);
@@ -81,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        if(helper.isEmailInvalid(email)){
+        if (helper.isEmailInvalid(email)) {
             Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
             return;
         }

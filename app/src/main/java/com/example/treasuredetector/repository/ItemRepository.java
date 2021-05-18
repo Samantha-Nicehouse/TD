@@ -2,10 +2,6 @@ package com.example.treasuredetector.repository;
 
 import android.app.Application;
 import android.graphics.Bitmap;
-import android.os.Handler;
-import android.os.Looper;
-
-import androidx.core.os.HandlerCompat;
 import androidx.lifecycle.LiveData;
 
 import com.example.treasuredetector.database.TreasureDetectorDatabase;
@@ -21,36 +17,23 @@ public class ItemRepository {
 
     private final ItemDao itemDao;
     private final LiveData<List<Item>> allItems;
+    private final LiveData<List<Item>> lastFiveItems;
     private final Executor executorService;
-    private final Handler mainThreadHandler;
-    private Callback callback;
-    private CallbackMap callbackMap;
     private final Helper helper;
 
-    public ItemRepository(Application application)
-    {
+    public ItemRepository(Application application) {
         TreasureDetectorDatabase database = TreasureDetectorDatabase.getInstance(application);
         itemDao = database.itemDao(); //assign database
         allItems = itemDao.getAllItems();
-        executorService = Executors.newFixedThreadPool(5);
-        mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper());
+        lastFiveItems = itemDao.getLastFiveEntries();
+        executorService = Executors.newFixedThreadPool(3);
         helper = new Helper(application);
 
     }
 
-    public void setCallback(Callback callback){
-        this.callback = callback;
-    }
-
-    public void setCallbackMap(CallbackMap callbackMap){
-        this.callbackMap = callbackMap;
-    }
-
-    // I think we are all clear, we can end the meeting now, bye
     //the following methods are the API that passes items to the repository abstractions layer
     //executes a thread to insert the item
-    public void insert(Item item, Bitmap bitmap)
-    {
+    public void insert(Item item, Bitmap bitmap) {
         executorService.execute(() -> {
 
             if (bitmap != null) {
@@ -62,19 +45,16 @@ public class ItemRepository {
                     item.setImageName(imageName);
                 }
             }
-
             itemDao.insert(item);
-
-            mainThreadHandler.post(() -> callback.onItemAdded());
         });
     }
-    public void update(Item item, Bitmap bitmap)
-    {
+
+    public void update(Item item, Bitmap bitmap) {
         executorService.execute(() -> {
             if (bitmap != null) {
 
                 //If there was an image already associated with this entry we will delete it
-                if(item.getImageName()!= null){
+                if (item.getImageName() != null) {
                     helper.deleteImageFromStorage(item.getImagePath(), item.getImageName());
                 }
 
@@ -86,47 +66,29 @@ public class ItemRepository {
                     item.setImageName(imageName);
                 }
             }
-
             itemDao.update(item);
-
-            mainThreadHandler.post(() -> callback.onItemUpdated());
         });
 
     }
-    public void delete(Item item)
-    {
+
+    public void delete(Item item) {
         executorService.execute(() -> {
             //If there is an image associated with this entry we will delete it
-            if(item.getImageName()!= null){
+            if (item.getImageName() != null) {
                 helper.deleteImageFromStorage(item.getImagePath(), item.getImageName());
             }
             itemDao.delete(item);
-
-            mainThreadHandler.post(() -> callback.onItemDeleted());
         });
 
     }
-    public void getLastFiveEntries()
-    {
-        executorService.execute(() -> {
 
-            List<Item> list = itemDao.getLastFiveEntries();
-
-            mainThreadHandler.post(() -> callbackMap.onItemsFetched(list));
-        });
+    public LiveData<List<Item>> getLastFiveEntries() {
+        return lastFiveItems;
     }
+
     public LiveData<List<Item>> getAllItems() {
         return allItems;
     }
 
-    public interface CallbackMap{
-        void onItemsFetched(List<Item> list);
-    }
-
-    public interface Callback{
-        void onItemAdded();
-        void onItemUpdated();
-        void onItemDeleted();
-    }
 
 }
