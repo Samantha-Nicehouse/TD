@@ -1,7 +1,6 @@
 package com.example.treasuredetector.helper;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -10,16 +9,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.provider.Settings;
-import android.util.Log;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
-
-import com.example.treasuredetector.R;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,45 +29,22 @@ import java.util.regex.Pattern;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class Helper  {
+public class Helper {
 
-    private static final String TAG = "Helper";
-
-    private final HashMap<String, Integer> hashMap;
+    public static final int LOCATION_PERMISSION = 1234;
     private Context context;
-
 
     public Helper(Context context) {
         this.context = context;
-        hashMap = new HashMap<>();
-        populateHashMap();
     }
 
     public Helper() {
-        hashMap = new HashMap<>();
-        populateHashMap();
-    }
-
-    private void populateHashMap() {
-        hashMap.put("Bottle Cap", R.drawable.ic_bottlecap);
-        hashMap.put("Bow and Arrow", R.drawable.ic_bow_and_arrow);
-        hashMap.put("Bullets", R.drawable.ic_bullets);
-        hashMap.put("Coins", R.drawable.ic_coins);
-        hashMap.put("Jewelry", R.drawable.ic_jewelry);
-        hashMap.put("Key", R.drawable.ic_key);
-        hashMap.put("Miscellaneous", R.drawable.ic_miscellaneous);
-        hashMap.put("Quiver", R.drawable.ic_quiver);
-        hashMap.put("Sword", R.drawable.ic_sword);
     }
 
     public boolean isEmailInvalid(String emailStr) {
         Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return !matcher.find();
-    }
-
-    public int getResourceIdFromName(String name) {
-        return hashMap.get(name);
     }
 
     public String getFormattedDate(long time) {
@@ -92,65 +63,6 @@ public class Helper  {
         formattedDate.append(calendar.get(Calendar.MINUTE) < 10 ? "0" + calendar.get(Calendar.MINUTE) : calendar.get(Calendar.MINUTE));
 
         return formattedDate.toString();
-    }
-
-    public boolean isLocationPermissionGranted() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "Permission is granted");
-                Location location = getLastKnownLocation(context);
-                if (location == null) {
-                    askUserToTurnOnLocations(context);
-                    return false;
-                }
-                return true;
-            } else {
-                Log.v(TAG, "Permission is revoked");
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 55);
-                return false;
-            }
-        } else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG, "Permission is granted");
-            return true;
-        }
-    }
-
-    private void askUserToTurnOnLocations(Context context) {
-        LocationManager lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            // Build the alert dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Location Services Not Active");
-            builder.setMessage("Please enable Location Services and GPS");
-            builder.setPositiveButton("OK", (dialogInterface, i) -> {
-                // Show location settings when the user acknowledges the alert dialog
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                context.startActivity(intent);
-            });
-            Dialog alertDialog = builder.create();
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.show();
-        }
-    }
-
-    private Location getLastKnownLocation(Context context) {
-        LocationManager mLocationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-            @SuppressLint("MissingPermission") Location l = mLocationManager.getLastKnownLocation(provider);
-            if (l != null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
-                bestLocation = l;
-            }
-        }
-        return bestLocation;
     }
 
     public String saveImageToStorage(Bitmap bitmapImage, String fileName) {
@@ -198,7 +110,41 @@ public class Helper  {
         }
     }
 
+    public boolean isLocationPermissionGranted(Activity activity) {
+        String[] permission = {android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                return isLocationServiceOn();
+            } else {
+                ActivityCompat.requestPermissions(activity, permission, LOCATION_PERMISSION);
+                return false;
+            }
+        } else {
+            ActivityCompat.requestPermissions(activity, permission, LOCATION_PERMISSION);
+            return false;
+        }
+    }
 
-
+    private boolean isLocationServiceOn() {
+        LocationManager lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            // Build the alert dialog
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
+            builder.setTitle("Location Services Not Active");
+            builder.setMessage("Please enable Location Services and GPS");
+            builder.setPositiveButton("OK", (dialogInterface, i) -> {
+                // Show location settings when the user acknowledges the alert dialog
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                context.startActivity(intent);
+            });
+            Dialog alertDialog = builder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+            return false;
+        }
+        return true;
+    }
 
 }

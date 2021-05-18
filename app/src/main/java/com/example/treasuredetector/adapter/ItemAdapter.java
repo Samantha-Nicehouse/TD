@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.treasuredetector.R;
+import com.example.treasuredetector.helper.Constants;
 import com.example.treasuredetector.helper.Helper;
 import com.example.treasuredetector.model.Item;
 
@@ -63,7 +64,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
     public void onBindViewHolder(final ItemHolder holder, int position) {
         Item currentItem = items.get(position);
 
-        holder.imageView.setImageResource(helper.getResourceIdFromName(currentItem.getCategory()));
+        holder.imageView.setImageResource(Constants.getResourceIdFromName(currentItem.getCategory()));
         holder.textViewTitle.setText(currentItem.getTitle());
         holder.textViewDescription.setText(currentItem.getDescription());
         holder.textViewDate.setText(helper.getFormattedDate(currentItem.getTime()));
