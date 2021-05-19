@@ -214,24 +214,24 @@ public class ItemActivity extends AppCompatActivity {
 
     }
 
-    private void updateInDB() {
+    private boolean updateInDB() {
         String title = editTextTitle.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
         String category = ((Category) spinnerCategory.getSelectedItem()).getName();
 
         if (title.isEmpty()) {
             Toast.makeText(ItemActivity.this, "Please enter title", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (description.isEmpty()) {
             Toast.makeText(ItemActivity.this, "Please enter description", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (category.equals("Select")) {
             Toast.makeText(ItemActivity.this, "Please select some category", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         this.item.setTitle(title);
@@ -243,6 +243,7 @@ public class ItemActivity extends AppCompatActivity {
 
         dialogHelper.showDialog();
         itemViewModel.update(item, bitmap);
+        return true;
     }
 
     private void deleteFromDB() {
@@ -401,10 +402,11 @@ public class ItemActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.actionSave) {
 
-            menuItemEdit.setVisible(true);
-            menuItemDelete.setVisible(true);
-            menuItemSave.setVisible(false);
-            updateInDB();
+            if(updateInDB()){
+                menuItemEdit.setVisible(true);
+                menuItemDelete.setVisible(true);
+                menuItemSave.setVisible(false);
+            }
             return true;
         } else if (item.getItemId() == R.id.actionDelete) {
             deleteFromDB();
@@ -426,7 +428,7 @@ public class ItemActivity extends AppCompatActivity {
         int colorId = R.color.edit_text_background_color;
 
         if (!isEditable) {
-            colorId = R.color.gray;
+            colorId = R.color.view_text_background_color;
         }
 
         editTextTitle.setBackgroundTintList(getResources().getColorStateList(colorId));

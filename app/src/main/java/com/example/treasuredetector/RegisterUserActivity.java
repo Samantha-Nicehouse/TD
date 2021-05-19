@@ -41,9 +41,10 @@ public class RegisterUserActivity extends AppCompatActivity {
                 if(firebaseUser != null){
                     Toast.makeText(RegisterUserActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RegisterUserActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);//it clears the activity stack so that you dont go back to the login activity which came before this
+                    //just go straight to the main activity so you dont have to login again
                     startActivity(intent);
-                    finish();
+                    finish();//clear the register activity
                 }
                 dialogHelper.dismissDialog();
             }

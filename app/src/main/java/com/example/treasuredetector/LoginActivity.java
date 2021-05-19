@@ -41,9 +41,8 @@ public class LoginActivity extends AppCompatActivity {
             if (firebaseUser != null) {
                 Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                finish();
+                finish();//deletes this activity from the stack
             }
             dialogHelper.dismissDialog();
         });
