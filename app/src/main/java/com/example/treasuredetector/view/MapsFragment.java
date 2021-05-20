@@ -27,12 +27,14 @@ import com.example.treasuredetector.repository.ItemRepository;
 import com.example.treasuredetector.view_model.ItemViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -46,7 +48,8 @@ public class MapsFragment extends Fragment {
 
     private static final String TAG = "MapsFragment";
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    LocationManager locationManager;
+    private LatLngBounds bounds;
+    private LatLngBounds.Builder builder;
     private GoogleMap mMap;
 
     private Boolean mLocationPermissionGranted = false;
@@ -82,7 +85,14 @@ public class MapsFragment extends Fragment {
             itemViewModel.getLastFiveEntries().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
                 @Override
                 public void onChanged(List<Item> items) {
+                    builder = new LatLngBounds.Builder();
                     moveCamera(items);
+                    bounds = builder.build();
+                    int width = getResources().getDisplayMetrics().widthPixels;
+                    int height = getResources().getDisplayMetrics().heightPixels;
+                    int padding = (int) (width * 0.30);
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height,padding);
+                    mMap.animateCamera(cu);
                 }
             });
 //            moveCamera();
@@ -169,14 +179,16 @@ public class MapsFragment extends Fragment {
     private void moveCamera(List<Item> itemList) {
 
         if(itemList != null && itemList.size() > 0){
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(itemList.get(0).getLatitude(), itemList.get(0).getLongitude()), DEFAULT_ZOOM));
-            MarkerOptions options = new MarkerOptions();
+         // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(itemList.get(0).getLatitude(), itemList.get(0).getLongitude()), DEFAULT_ZOOM));
+           MarkerOptions options = new MarkerOptions();
 
             for (Item item: itemList) {
+
                 options.position(new LatLng(item.getLatitude(), item.getLongitude()));
                 options.title(item.getTitle());
                 options.snippet(item.getDescription());
                 mMap.addMarker(options);
+                builder.include(options.getPosition());
             }
         }
     }
