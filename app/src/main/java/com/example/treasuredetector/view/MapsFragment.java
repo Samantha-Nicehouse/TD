@@ -81,7 +81,7 @@ public class MapsFragment extends Fragment {
             //when map is loaded
             mMap = googleMap;
 
-            itemViewModel = new ViewModelProvider(getActivity()).get(ItemViewModel.class);
+           // itemViewModel = new ViewModelProvider(getActivity()).get(ItemViewModel.class);
             itemViewModel.getLastFiveEntries().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
                 @Override
                 public void onChanged(List<Item> items) {
@@ -116,6 +116,7 @@ public class MapsFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(getContext().getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(getContext().getApplicationContext(), COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
+                itemViewModel = new ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
                 SupportMapFragment mapFragment =
                         (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
                mapFragment.onCreate(savedInstanceState);
