@@ -14,7 +14,7 @@ import com.example.treasuredetector.model.Item;
 import java.util.Date;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Item.class}, version = 2)
+@Database(entities = {Item.class}, version = 3)
 public abstract class TreasureDetectorDatabase extends RoomDatabase {
     //creates a singleton of the item database - used everywhere in app
     private static TreasureDetectorDatabase instance;
@@ -34,11 +34,11 @@ public abstract class TreasureDetectorDatabase extends RoomDatabase {
                         public void onCreate(@NonNull SupportSQLiteDatabase db) {
                             super.onCreate(db);
                             Executors.newSingleThreadScheduledExecutor().execute(() -> {
-                                getInstance(context).itemDao().insert(new Item("Title1", "Description1", "Miscellaneous", new Date().getTime(), 56.15932211, 10.22259811));
-                                getInstance(context).itemDao().insert(new Item("Title2", "Description2", "Miscellaneous", new Date().getTime(), 56.16659111, 10.21567511));
-                                getInstance(context).itemDao().insert(new Item("Title3", "Description3", "Miscellaneous", new Date().getTime(), 56.13146711, 10.20554611));
-                                getInstance(context).itemDao().insert(new Item("Title4", "Description4", "Miscellaneous", new Date().getTime(), 56.13055711, 10.20762311));
-                                getInstance(context).itemDao().insert(new Item("Title5", "Description5", "Miscellaneous", new Date().getTime(), 56.12906811, 10.19494211));
+                                getInstance(context).itemDao().insert(new Item("Excaliber", "King Arthur's sword", "Sword", new Date().getTime(), 56.196031, 10.240737));
+                                getInstance(context).itemDao().insert(new Item("Precious", "Tumbler key with bow", "Key", new Date().getTime(), 56.167834, 10.215146));
+                                getInstance(context).itemDao().insert(new Item("Jackpot", "This is going to be worth so much money", "Miscellaneous", new Date().getTime(), 56.13146711, 10.20554611));
+                                getInstance(context).itemDao().insert(new Item("Silver Coins", "18th century silver coins", "Coins", new Date().getTime(), 56.13055711, 10.20762311));
+                                getInstance(context).itemDao().insert(new Item("Ring", "Size 6 ring", "Jewelry", new Date().getTime(), 56.12906811, 10.19494211));
 
                             });
                         }

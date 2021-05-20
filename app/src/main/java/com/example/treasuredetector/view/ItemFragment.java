@@ -58,7 +58,7 @@ public class ItemFragment extends Fragment {
         ItemViewModel itemViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(ItemViewModel.class);
         itemViewModel.getAllItems().observe(getViewLifecycleOwner(), items -> {
             adapter.setItems(items);
-            //adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
 
         });
 

@@ -85,27 +85,12 @@ public class MapsFragment extends Fragment {
             itemViewModel.getLastFiveEntries().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
                 @Override
                 public void onChanged(List<Item> items) {
-                    builder = new LatLngBounds.Builder();
+
                     moveCamera(items);
-                    bounds = builder.build();
-                    int width = getResources().getDisplayMetrics().widthPixels;
-                    int height = getResources().getDisplayMetrics().heightPixels;
-                    int padding = (int) (width * 0.30);
-                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height,padding);
-                    mMap.animateCamera(cu);
+
                 }
             });
-//            moveCamera();
 
-//            if (mLocationPermissionGranted) {
-////                getDeviceLocation();
-//                if (ActivityCompat.checkSelfPermission(getContext().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-//                        != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext().getApplicationContext(),
-//                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                    return;
-//                }
-//                mMap.setMyLocationEnabled(true);
-//            }
         }
     };
 
@@ -133,7 +118,7 @@ public class MapsFragment extends Fragment {
                 mLocationPermissionGranted = true;
                 SupportMapFragment mapFragment =
                         (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
-                //mapFragment.onCreate(savedInstanceState);
+               mapFragment.onCreate(savedInstanceState);
                 mapFragment.onResume();
                 mapFragment.onAttach(getActivity());
                 mapFragment.getMapAsync(callback);
@@ -177,9 +162,9 @@ public class MapsFragment extends Fragment {
     }
 
     private void moveCamera(List<Item> itemList) {
-
+        builder = new LatLngBounds.Builder();
         if(itemList != null && itemList.size() > 0){
-         // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(itemList.get(0).getLatitude(), itemList.get(0).getLongitude()), DEFAULT_ZOOM));
+        //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(itemList.get(0).getLatitude(), itemList.get(0).getLongitude()), DEFAULT_ZOOM));
            MarkerOptions options = new MarkerOptions();
 
             for (Item item: itemList) {
@@ -191,6 +176,12 @@ public class MapsFragment extends Fragment {
                 builder.include(options.getPosition());
             }
         }
+       bounds = builder.build();
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+       int padding = (int) (width * 0.30);
+      CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height,padding);
+       mMap.animateCamera(cu);
     }
 }
 

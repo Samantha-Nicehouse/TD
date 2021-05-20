@@ -3,6 +3,7 @@ package com.example.treasuredetector;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.os.HandlerCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
@@ -110,31 +111,37 @@ public class ItemActivity extends AppCompatActivity {
 
         itemViewModel = new ViewModelProvider(this).get(ItemViewModel.class);
 
-        itemViewModel.getAllItems().observe(this, items -> {
+        itemViewModel.getAllItems().observe(this, new Observer<List<Item>>() {
+            @Override
+            public void onChanged(List<Item> items) {
 
-            if (!recordedSizeOfOriginalList) {
-                sizeOfOriginalList = items.size();
-                recordedSizeOfOriginalList = true;
-                return;
-            }
+                if (!recordedSizeOfOriginalList) {
+                    sizeOfOriginalList = items.size();
+                    recordedSizeOfOriginalList = true;
+                    return;
+                }
 
-            //Item added
-            if (items.size() > sizeOfOriginalList) {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-                onBackPressed();
-            }
-            //Item updated
-            else if (items.size() == sizeOfOriginalList) {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
-                editMode(false);
-            }
-            //Item Deleted
-            else if (items.size() < sizeOfOriginalList) {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
-                onBackPressed();
+                //Item added
+                if (items.size() > sizeOfOriginalList) {
+                    dialogHelper.dismissDialog();
+                    Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                    ItemActivity.this.onBackPressed();
+
+                }
+                //Item updated
+                else if (items.size() == sizeOfOriginalList) {
+                    dialogHelper.dismissDialog();
+                    Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                    ItemActivity.this.editMode(false);
+
+                }
+                //Item Deleted
+                else if (items.size() < sizeOfOriginalList) {
+                    dialogHelper.dismissDialog();
+                    Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                    ItemActivity.this.onBackPressed();
+
+                }
             }
         });
 
