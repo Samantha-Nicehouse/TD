@@ -16,7 +16,7 @@ Should have:
 
 Could have:
 
-6.	As a user, I could map a trail of my adventure.//Not implemented, this relevant to the applicaton.
+6.	As a user, I could map a trail of my adventure.//Not implemented, this is not relevant to the applicaton.
 7.	As a user, I want to edit my discovery list.
 8.	As a user, I want to edit my user profile.//Not implemented.
 
