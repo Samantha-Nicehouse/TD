@@ -24,6 +24,9 @@ Would have:
 
 9. As a user, I could share tips and advice for optimal use of a metal detector with other app users. 
      (NO ONE actually shares locations of valuable discoveries or valuable discoveries to due to intentional finding laws.)
+     
+     LINK to YouTube demonstration: https://youtu.be/SNOtgqb3rLg![image](https://user-images.githubusercontent.com/38719500/119037760-a9dbbe80-b9b2-11eb-94be-426d57d3539d.png)
+
 
 The following tutorials/files were heavily utilized to create this application:
 
