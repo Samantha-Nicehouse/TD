@@ -25,4 +25,11 @@ Would have:
 9. As a user, I could share tips and advice for optimal use of a metal detector with other app users. 
      (NO ONE actually shares locations of valuable discoveries or valuable discoveries to due to intentional finding laws.)
 
+The following tutorials/files were heavily utilized to create this application:
+
+https://www.youtube.com/playlist?list=PLrnPJCHvNZuDihTpkRs6SpZhqgBqPU118
+https://github.com/learntodroid/FirebaseAuthLoginRegisterMVVM/tree/master/app/src/main/java/com/learntodroid/firebaseauthloginregistermvvm/model
+https://www.codeproject.com/Questions/1227879/Adding-and-saving-marker-in-Google-maps-android
+https://stackoverflow.com/questions/14828217/android-map-v2-zoom-to-show-all-the-markers
+
 
