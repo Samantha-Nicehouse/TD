@@ -3,6 +3,7 @@ package com.example.treasuredetector;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.os.HandlerCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
@@ -110,31 +111,37 @@ public class ItemActivity extends AppCompatActivity {
 
         itemViewModel = new ViewModelProvider(this).get(ItemViewModel.class);
 
-        itemViewModel.getAllItems().observe(this, items -> {
+        itemViewModel.getAllItems().observe(this, new Observer<List<Item>>() {
+            @Override
+            public void onChanged(List<Item> items) {
 
-            if (!recordedSizeOfOriginalList) {
-                sizeOfOriginalList = items.size();
-                recordedSizeOfOriginalList = true;
-                return;
-            }
+                if (!recordedSizeOfOriginalList) {
+                    sizeOfOriginalList = items.size();
+                    recordedSizeOfOriginalList = true;
+                    return;
+                }
 
-            //Item added
-            if (items.size() > sizeOfOriginalList) {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-                onBackPressed();
-            }
-            //Item updated
-            else if (items.size() == sizeOfOriginalList) {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
-                editMode(false);
-            }
-            //Item Deleted
-            else if (items.size() < sizeOfOriginalList) {
-                dialogHelper.dismissDialog();
-                Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
-                onBackPressed();
+                //Item added
+                if (items.size() > sizeOfOriginalList) {
+                    dialogHelper.dismissDialog();
+                    Toast.makeText(ItemActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                    ItemActivity.this.onBackPressed();
+
+                }
+                //Item updated
+                else if (items.size() == sizeOfOriginalList) {
+                    dialogHelper.dismissDialog();
+                    Toast.makeText(ItemActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                    ItemActivity.this.editMode(false);
+
+                }
+                //Item Deleted
+                else if (items.size() < sizeOfOriginalList) {
+                    dialogHelper.dismissDialog();
+                    Toast.makeText(ItemActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                    ItemActivity.this.onBackPressed();
+
+                }
             }
         });
 
@@ -214,24 +221,24 @@ public class ItemActivity extends AppCompatActivity {
 
     }
 
-    private void updateInDB() {
+    private boolean updateInDB() {
         String title = editTextTitle.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
         String category = ((Category) spinnerCategory.getSelectedItem()).getName();
 
         if (title.isEmpty()) {
             Toast.makeText(ItemActivity.this, "Please enter title", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (description.isEmpty()) {
             Toast.makeText(ItemActivity.this, "Please enter description", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (category.equals("Select")) {
             Toast.makeText(ItemActivity.this, "Please select some category", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         this.item.setTitle(title);
@@ -243,6 +250,7 @@ public class ItemActivity extends AppCompatActivity {
 
         dialogHelper.showDialog();
         itemViewModel.update(item, bitmap);
+        return true;
     }
 
     private void deleteFromDB() {
@@ -401,10 +409,11 @@ public class ItemActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.actionSave) {
 
-            menuItemEdit.setVisible(true);
-            menuItemDelete.setVisible(true);
-            menuItemSave.setVisible(false);
-            updateInDB();
+            if(updateInDB()){
+                menuItemEdit.setVisible(true);
+                menuItemDelete.setVisible(true);
+                menuItemSave.setVisible(false);
+            }
             return true;
         } else if (item.getItemId() == R.id.actionDelete) {
             deleteFromDB();
@@ -426,7 +435,7 @@ public class ItemActivity extends AppCompatActivity {
         int colorId = R.color.edit_text_background_color;
 
         if (!isEditable) {
-            colorId = R.color.gray;
+            colorId = R.color.view_text_background_color;
         }
 
         editTextTitle.setBackgroundTintList(getResources().getColorStateList(colorId));

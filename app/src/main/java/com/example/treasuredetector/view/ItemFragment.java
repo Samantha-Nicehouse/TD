@@ -59,6 +59,7 @@ public class ItemFragment extends Fragment {
         itemViewModel.getAllItems().observe(getViewLifecycleOwner(), items -> {
             adapter.setItems(items);
             adapter.notifyDataSetChanged();
+
         });
 
         recyclerView = view.findViewById(R.id.list);
